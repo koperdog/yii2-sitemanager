@@ -4,6 +4,8 @@
     "type": "yii2-extension",
     "keywords": ["yii2","t2cms","settings"],
     "license": "Apache-2.0",
+    "stability":"stable",
+    "version":"dev-master",
     "authors": [
         {
             "name": "koperdog",
