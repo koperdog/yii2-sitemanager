@@ -57,6 +57,25 @@ class DomainService {
         return true;
     }
     
+    public function updateDomain(int $id, array $data): bool
+    {
+        $domain = $this->domain->get($id);
+        $domain->load($data);
+        
+        $settings = $this->setting->getAllByDomain($id);
+        
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            $this->domain->save($domain);
+            $this->settingService->saveMultiple($settings, $data);
+            $transaction->commit();
+        } catch(\Throwable $e) {
+            $transaction->rollBack();
+            return false;
+        }
+        return true;
+    }
+    
     public function deleteDomain(Domain $domain): bool
     {
         $transaction = \Yii::$app->db->beginTransaction();
