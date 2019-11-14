@@ -4,15 +4,14 @@
     "type": "yii2-extension",
     "keywords": ["yii2","t2cms","settings"],
     "license": "Apache-2.0",
-    "stability":"stable",
-    "version":"dev-master",
     "authors": [
         {
             "name": "koperdog",
             "email": "koperdog@gmail.com"
         }
     ],
-    "require": {
+     "minimum-stability": "stable",
+     "require": {
         "yiisoft/yii2": "~2.0.0"
     },
     "autoload": {

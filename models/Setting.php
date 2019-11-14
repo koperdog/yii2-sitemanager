@@ -13,13 +13,13 @@ use Yii;
  * @property int $autoload
  * @property int $type
  * @property int $status
- * @property int $site_id
+ * @property int $domain_id
  * @property int $lang_id
  * @property int $field_type
  *
  * @property DomainSetting[] $domainSettings
  * @property Language $lang
- * @property Domain $site
+ * @property Domain $domain
  */
 class Setting extends \yii\db\ActiveRecord
 {
@@ -41,10 +41,10 @@ class Setting extends \yii\db\ActiveRecord
         return [
             [['name', 'autoload', 'type', 'status', 'field_type'], 'required'],
             [['value'], 'string'],
-            [['autoload', 'type', 'status', 'site_id', 'lang_id', 'field_type'], 'integer'],
+            [['autoload', 'type', 'status', 'domain_id', 'lang_id', 'field_type'], 'integer'],
             [['name'], 'string', 'max' => 100],
             [['lang_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::className(), 'targetAttribute' => ['lang_id' => 'id']],
-            [['site_id'], 'exist', 'skipOnError' => true, 'targetClass' => Domain::className(), 'targetAttribute' => ['site_id' => 'id']],
+            [['domain_id'], 'exist', 'skipOnError' => true, 'targetClass' => Domain::className(), 'targetAttribute' => ['domain_id' => 'id']],
         ];
     }
 
@@ -60,7 +60,7 @@ class Setting extends \yii\db\ActiveRecord
             'autoload' => Yii::t('app', 'Autoload'),
             'type' => Yii::t('app', 'Type'),
             'status' => Yii::t('app', 'Status'),
-            'site_id' => Yii::t('app', 'Site ID'),
+            'domain_id' => Yii::t('app', 'Domain ID'),
             'lang_id' => Yii::t('app', 'Lang ID'),
             'field_type' => Yii::t('app', 'Field Type'),
         ];
@@ -85,8 +85,8 @@ class Setting extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSite()
+    public function getDomain()
     {
-        return $this->hasOne(Domain::className(), ['id' => 'site_id']);
+        return $this->hasOne(Domain::className(), ['id' => 'domain_id']);
     }
 }

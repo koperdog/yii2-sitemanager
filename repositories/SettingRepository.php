@@ -40,10 +40,10 @@ class SettingRepository {
         return $models;
     }
     
-    public function getAllBySite(int $site_id, int $status = null, int $lang_id = null): ?array
+    public function getAllByDomain(int $domain_id, int $status = null, int $lang_id = null): ?array
     {
         $models = Setting::find()
-                ->where(['site_id' => $site_id])
+                ->where(['domain_id' => $domain_id])
                 ->andFilterWhere(['status' => $status, 'lang_id' => $lang_id])
                 ->indexBy('id')
                 ->all();
@@ -69,9 +69,10 @@ class SettingRepository {
         if(!$setting->save()){
             throw new \RuntimeException();
         }
+        return true;
     }
     
-    public function saveMultiple(array $settings, array $data)
+    public function saveAll(array $settings, array $data): bool
     {
         if (Model::loadMultiple($settings, $data) && Model::validateMultiple($settings)) {
             foreach ($settings as $setting) {
@@ -79,6 +80,14 @@ class SettingRepository {
             }
         }
         
+        return true;
+    }
+    
+    public function removeAllByDomain(int $domain_id): bool
+    {
+        if(!Setting::deleteAll(['domain_id' => $domain_id])){
+            throw new \RuntimeException();
+        }
         return true;
     }
 }

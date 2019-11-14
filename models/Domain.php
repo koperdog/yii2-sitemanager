@@ -16,6 +16,8 @@ use Yii;
  */
 class Domain extends \yii\db\ActiveRecord
 {
+    const MAIN = 1;
+    
     /**
      * {@inheritdoc}
      */
@@ -32,7 +34,7 @@ class Domain extends \yii\db\ActiveRecord
         return [
             [['domain'], 'required'],
             [['main'], 'boolean'],
-            [['main'], 'default', 'value' => false], 
+            [['main'], 'default', 'value' => 0], 
             [['domain'], 'string', 'max' => 255],
         ];
     }
@@ -54,7 +56,7 @@ class Domain extends \yii\db\ActiveRecord
      */
     public function getDomainSettings()
     {
-        return $this->hasMany(DomainSetting::className(), ['site_id' => 'id']);
+        return $this->hasMany(DomainSetting::className(), ['domain_id' => 'id']);
     }
 
     /**
@@ -62,6 +64,6 @@ class Domain extends \yii\db\ActiveRecord
      */
     public function getSettings()
     {
-        return $this->hasMany(Setting::className(), ['site_id' => 'id']);
+        return $this->hasMany(Setting::className(), ['domain_id' => 'id']);
     }
 }

@@ -6,13 +6,14 @@
  * and open the template in the editor.
  */
 
-namespace koperdog\yii2settings\useCases\Setting;
+namespace koperdog\yii2settings\useCases;
 
 use koperdog\yii2settings\repositories\{
     SettingRepository,
     DomainRepository,
     LanguageRepository
 };
+use \koperdog\yii2settings\models\Setting;
 
 /**
  * Description of SettingService
@@ -33,6 +34,25 @@ class SettingService {
     
     public function saveMultiple(array $settings, array $data): bool
     {
-        return $this->setting->setSettings($settings, $data);
+        return $this->setting->saveAll($settings, $data);
+    }
+    
+    public function copySettingsToDomain(int $domain_id): void
+    {
+        $main_domain = $this->domain->getMain();
+        $settings    = $this->setting->getAllByDomain($main_domain->id);
+        
+        foreach($settings as $setting){
+            $new = new Setting();
+            $new->attributes = $setting->attributes;
+            $new->domain_id  = $domain_id;
+            
+            $this->setting->save($new);
+        }
+    }
+    
+    public function deleteSettingsByDomain(int $domain_id): ?bool
+    {
+        return $this->setting->removeAllByDomain($domain_id);
     }
 }

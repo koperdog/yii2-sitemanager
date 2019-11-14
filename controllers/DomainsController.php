@@ -1,19 +1,28 @@
 <?php
 
-namespace backend\controllers;
+namespace koperdog\yii2settings\controllers;
 
 use Yii;
-use common\models\Domain;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+
+use koperdog\yii2settings\useCases\DomainService;
+use koperdog\yii2settings\repositories\DomainRepository;
+use koperdog\yii2settings\repositories\SettingRepository;
+use koperdog\yii2settings\models\Domain;
 
 /**
  * DomainController implements the CRUD actions for Domain model.
  */
 class DomainsController extends Controller
 {
+    
+    private $service;
+    
+    private $domain;
+    private $settings;
     /**
      * {@inheritdoc}
      */
@@ -29,11 +38,20 @@ class DomainsController extends Controller
         ];
     }
     
-    public function actionTest()
+    public function __construct
+    (
+        $id, 
+        $module, 
+        DomainService $service,
+        DomainRepository $domain,
+        SettingRepository $settings,
+        $config = []
+    ) 
     {
-        $data = Domain::findOne(['main' => true])->id;
-        
-        debug($data);
+        parent::__construct($id, $module, $config);
+        $this->service  = $service;
+        $this->domain   = $domain; 
+        $this->settings = $settings;
     }
 
     /**
@@ -43,7 +61,7 @@ class DomainsController extends Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Domain::find(),
+            'query' => $this->domain->find()
         ]);
 
         return $this->render('index', [
@@ -59,11 +77,11 @@ class DomainsController extends Controller
      */
     public function actionView($id)
     {
-        $service  = new \common\components\SettingService();
-        $settings = $service->getSettings($status, $id);
+        $settings = $this->settings->getAllByDomain($id, $status);
         
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model'    => $this->findModel($id),
+            'settings' => $settings
         ]);
     }
 
@@ -74,14 +92,20 @@ class DomainsController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Domain();
+        $form = new \koperdog\yii2settings\models\Domain();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()){
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($form->load(Yii::$app->request->post())){
+            if($this->service->createDomain(Yii::$app->request->post('Domain'))){
+                \Yii::$app->session->setFlash('success', \Yii::t('app', 'Success save'));
+            }
+            else{
+                \Yii::$app->session->setFlash('error', \Yii::t('app', 'Error create'));
+            }
+            return $this->redirect(['/settings/domains']);
         }
 
         return $this->render('create', [
-            'model' => $model,
+            'model' => $form,
         ]);
     }
 
@@ -94,12 +118,10 @@ class DomainsController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-        
-        $service  = new \common\components\SettingService();
-        $settings = $service->getSettings($id);
+        $model    = $this->findModel($id);
+        $settings = $this->settings->getAllByDomain($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
             \Yii::$app->session->setFlash('success', \Yii::t('app', 'Success save'));
         }
 
@@ -118,7 +140,14 @@ class DomainsController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        
+        if($this->service->deleteDomain($model)){
+            \Yii::$app->session->setFlash('success', \Yii::t('app', 'Success delete'));
+        }
+        else{
+            \Yii::$app->session->setFlash('error', \Yii::t('app', 'Error delete'));
+        }
 
         return $this->redirect(['index']);
     }

@@ -2,10 +2,11 @@
 
 namespace koperdog\yii2settings\controllers;
 
-use koperdog\yii2settings\useCases\Setting\SettingService;
+use koperdog\yii2settings\useCases\SettingService;
 use koperdog\yii2settings\repositories\SettingRepository;
+use \koperdog\yii2settings\models\Setting;
 
-class SettingsController extends \yii\web\Controller
+class DefaultController extends \yii\web\Controller
 {
     private $service;
     private $settings;
@@ -26,10 +27,10 @@ class SettingsController extends \yii\web\Controller
     
     public function actionIndex()
     {
-        $settings = $this->settings->getByStatus(Setting::STATUS['GENERAL']);
+        $settings = $this->settings->getAllByStatus(Setting::STATUS['GENERAL']);
         
         if(\Yii::$app->request->post()){
-            if($this->service->saveMultiplie(\Yii::$app->request->post())){
+            if($this->service->saveMultiple($settings, \Yii::$app->request->post())){
                 \Yii::$app->session->setFlash('success', \Yii::t('app', 'Success save'));
             }
             else{
