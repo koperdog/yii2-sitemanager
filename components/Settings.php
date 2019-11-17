@@ -14,5 +14,6 @@ namespace koperdog\yii2settings\components;
  * @author Koperdog <koperdog@github.com>
  */
 class Settings {
-    //put your code here
+    //put your code here 
+    // component cache etc..
 }
