@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace koperdog\yii2settings\repositories;
+namespace koperdog\yii2settings\readModels;
 
 use koperdog\yii2settings\models\Domain;
 
@@ -15,33 +15,33 @@ use koperdog\yii2settings\models\Domain;
  *
  * @author Koperdog <koperdog@github.com>
  */
-class DomainRepository {
+class DomainReadRepository {
     
     public function existByDomain(string $domain): bool
     {
         return Domain::find()->where(['domain' => $domain])->exists();
     }
     
-    public function getAll(): ?array
+    public function getAll(): array
     {
-        if(!$models = Domain::findAll()){
+        if(!$models = Domain::find()->asArray()->all()){
             throw new \DomainException();
         }
         return $models;
     }
     
-    public function get(int $id): Domain
+    public function get(int $id): array
     {
-        if(!$model = Domain::findOne($id)){
+        if(!$model = Domain::find()->where(['id' => $id])->asArray()->one()){
             throw new \DomainException();
         }
         
         return $model;
     }
     
-    public function getMain(): Domain
+    public function getMain(): array
     {
-        if(!$model = Domain::findOne(['main' => Domain::MAIN])){
+        if(!$model = Domain::find()->where(['main' => Domain::MAIN])->asArray()->one()){
             throw new \DomainException();
         }
         
@@ -53,25 +53,9 @@ class DomainRepository {
         return Domain::find();
     }
     
-    public function save(Domain $setting): bool
+    public function getByDomain(string $domain): array
     {
-        if(!$setting->save()){
-            throw new \RuntimeException();
-        }
-        return true;
-    }
-    
-    public function remove(Domain $setting): bool
-    {
-        if(!$setting->delete()){
-            throw new \RuntimeException();
-        }
-        return true;
-    }
-    
-    public function getByDomain(string $domain): Domain
-    {
-        if(!$model = Domain::find()->where(['domain' => $domain])->one()){
+        if(!$model = Domain::find()->where(['domain' => $domain])->asArray()->one()){
             throw new \DomainException();
         }
         
