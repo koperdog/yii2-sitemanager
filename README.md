@@ -48,7 +48,7 @@ and add the module to backend config:
 
 Then start the migration (console):
 ```php
-php yii migrate --migrationPath=@koperdog/yii2-settings/migrations
+php yii migrate --migrationPath=@vendor/koperdog/yii2-settings/migrations
 ```
 Usage
 -----
@@ -56,16 +56,15 @@ Usage
 Once the extension is installed, simply use it in your code by  :
 
 ```php
-<?= \koperdog\yii2settings\AutoloadExample::widget(); ?>```
+\Yii::$app->settings->get('setting_name');
+```
+check [docs]docs another methods
 
-Add the component to your common config:
-```php
-...
-'components' => [
-    ...
-    'settings' => [
-        'class' => 'koperdog\yii2settings\components\Settings',
-    ],
-    ...
-]
-...```
+CRUD settings from backend:
+go to /settings
+
+CRUD domains:
+go to /settings/domains
+
+CRUD languages:
+go to /settings/languages
