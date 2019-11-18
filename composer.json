@@ -2,8 +2,10 @@
     "name": "koperdog/yii2-settings",
     "description": "Settings for multilanguage, multidomain site",
     "type": "yii2-extension",
-    "keywords": ["yii2","t2cms","settings"],
+    "keywords": ["yii2","t2cms","settings", "multidomain", "multilanguage"],
     "license": "Apache-2.0",
+    "stability":"stable",
+    "version":"1.0.1",
     "authors": [
         {
             "name": "koperdog",
