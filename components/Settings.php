@@ -1,9 +1,19 @@
 <?php
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2019 Koperdog <koperdog@github.com>.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 namespace koperdog\yii2settings\components;
@@ -19,24 +29,80 @@ use koperdog\yii2settings\readModels\{
  * Description of Settings
  *
  * @author Koperdog <koperdog@github.com>
+ * @version 1.0
+ * @todo Gets setting for the current language
  */
 class Settings extends \yii\base\Component
 {
+    /**
+     * key cache
+     */
     const KEY_CACHE   = "kpg-settings";
+    
+    /**
+     * default main domain
+     */
     const MAIN_DOMAIN = "main";
     
+    /**
+     * Yii cache component
+     *
+     * @var type yii\caching\CacheInterface
+     */
     private $cache;
     
+    /**
+     * All settings
+     * 
+     * @var type array
+     */
     private $data       = [];
     
+    /**
+     * Model for read settings data
+     * 
+     * Model for read settings, implements repository design
+     * 
+     * @var type koperdog\yii2settings\readModels\SettingReadRepository
+     */
     private $settings;
+    
+    /**
+     * Model for read domain data
+     * 
+     * Model for read domain, implements repository design
+     * 
+     * @var type koperdog\yii2settings\readModels\DomainReadRepository
+     */
     private $domains;
+    
+    /**
+     * Model for read languages data
+     * 
+     * Model for read languages, implements repository design
+     * 
+     * @var type koperdog\yii2settings\readModels\LanguageReadRepository
+     */
     private $languages;
  
+    /**
+     * Current domain, SERVER_HOST
+     * 
+     * @var type string
+     */
     public $currentDomain = "";
     
+    /**
+     * Component constructor 
+     * 
+     * @param SettingReadRepository $settings
+     * @param DomainReadRepository $domains
+     * @param LanguageReadRepository $languages
+     */
     public function __construct(SettingReadRepository $settings, DomainReadRepository $domains, LanguageReadRepository $languages)
     {
+        parent::__construct();
+        
         $this->cache = \Yii::$app->cache;
         
         $this->settings  = $settings;
@@ -50,6 +116,14 @@ class Settings extends \yii\base\Component
         $this->loadCurrentSettings();
     }
     
+    /**
+     * gets setting by name
+     * 
+     * Gets setting by name, first for the domain, then for the main domain, then for the entire site
+     * 
+     * @param string $name
+     * @return array|null
+     */
     public function get(string $name): ?array
     {
         if(isset($this->data['domains'][$this->currentDomain][$name])){
@@ -65,6 +139,14 @@ class Settings extends \yii\base\Component
         return $tmp;
     }
     
+    /**
+     * gets setting value by name
+     * 
+     * Gets setting value by name, first for the domain, then for the main domain, then for the entire site
+     * 
+     * @param string $name
+     * @return string|null
+     */
     public function getValue(string $name): ?string
     {        
         if(isset($this->data['domains'][$this->currentDomain][$name]['value'])){
@@ -80,21 +162,42 @@ class Settings extends \yii\base\Component
         return $tmp;
     }
     
+    /**
+     * Gets all settings
+     * 
+     * @return array|null
+     */
     public function getAll(): ?array
     {
         return $this->data;
     }
     
+    /**
+     * Gets general setting by name
+     * 
+     * @param type $name
+     * @return string|null
+     */
     public function getGeneral($name): ?string
     {
         return $this->data['general'][$name]['value'];
     }
     
+    /**
+     * Gets all settings for the current domain
+     * 
+     * @return array|null
+     */
     public function getAllByDomain(): ?array
     {
         return $this->data['domains'][$this->currentDomain];
     }
     
+    /**
+     * Loads general settings
+     * 
+     * @return void
+     */
     private function loadGeneralSettings(): void
     {
         $key  = self::KEY_CACHE . "." . Setting::STATUS['GENERAL'];
@@ -108,6 +211,11 @@ class Settings extends \yii\base\Component
         $this->data['general'] = $data;
     }
     
+    /**
+     * Loads settings for the main domain
+     * 
+     * @return void
+     */
     private function loadMainDomainSettings(): void
     {
         $key = self::KEY_CACHE . "." . self::MAIN_DOMAIN;
@@ -122,6 +230,11 @@ class Settings extends \yii\base\Component
         $this->data['domains'][self::MAIN_DOMAIN] = $data;
     }
     
+    /**
+     * Loads settings for the current domain
+     * 
+     * @return void
+     */
     private function loadCurrentSettings(): void
     {
         $key = self::KEY_CACHE . "." . $this->currentDomain;
