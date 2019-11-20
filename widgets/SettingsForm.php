@@ -1,6 +1,6 @@
 <?php
 
-namespace koperdog\yii2settings;
+namespace koperdog\yii2settings\widgets;
 
 /**
  * This is just an example.

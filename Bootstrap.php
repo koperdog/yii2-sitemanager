@@ -34,5 +34,6 @@ class Bootstrap implements BootstrapInterface{
     public function bootstrap($app)
     {
         SettingsForm::$html = $app->view->renderAjax('views/fields/text', ['text' => "AGA TEST"]);
+        exit;
     }
 }

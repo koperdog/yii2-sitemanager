@@ -140,7 +140,7 @@ class DomainsController extends Controller
     
     public function actionTest()
     {
-        return \koperdog\yii2settings\SettingsForm::widget();
+        return \koperdog\yii2settings\widgets\SettingsForm::widget();
     }
 
     /**
