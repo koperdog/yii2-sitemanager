@@ -22,7 +22,7 @@ use Yii;
 class Setting extends \yii\db\ActiveRecord
 {
     
-    const STATUS = ['GENERAL' => 0, 'MAIN' => 1, 'CUSTOM' => 2];
+    const STATUS = ['GENERAL' => 0, 'MAIN' => 1, 'CUSTOM' => 2, 'MODULE' => 3];
     const FIELD_TYPE = ['text' => 1, 'textarea' => 2, 'checkbox' => 3, 'radio' => 4, 'select' => 5];
     
     /**

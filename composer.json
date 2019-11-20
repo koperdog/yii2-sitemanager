@@ -5,7 +5,7 @@
     "keywords": ["yii2","t2cms","settings", "multidomain", "multilanguage"],
     "license": "Apache-2.0",
     "stability":"stable",
-    "version":"1.0.2",
+    "version":"1.1",
     "authors": [
         {
             "name": "koperdog",
@@ -15,9 +15,6 @@
      "minimum-stability": "stable",
      "require": {
         "yiisoft/yii2": "~2.0.0"
-    },
-    "extra": {
-        "bootstrap": "koperdog\\yii2settings\\Bootstrap"
     },
     "autoload": {
         "psr-4": {

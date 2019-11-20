@@ -7,16 +7,30 @@ namespace koperdog\yii2settings\widgets;
  */
 class SettingsForm extends \yii\base\Widget
 {
-    public static $html;
+    private static $html;
+    
+    private static $template = '<div class="field_group">{input}';
+    
+    public function init(array $options = [])
+    {
+        parent::init();
+    }
     
     public function run()
     {
-        return self::$html;
+        $html = "";
+        
+        foreach(self::$html as $key => $value){
+            $html .= str_replace("{input}", $value, self::$template);
+            $html .= "\n";
+        }
+        
+        return $html;
     }
     
-    public static function setField(array $setting, array $data): void
+    public static function addField(string $key, string $html): void
     {
-        self::$data[$setting['name']] = ['field' => $setting, 'data' => $data];
+        self::$data[$key] = $html;
     }
     
     public static function getField(string $name): ?array
