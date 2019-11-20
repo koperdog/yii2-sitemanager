@@ -32,6 +32,17 @@ use \yii\base\Model;
 class SettingRepository {
     
     /**
+     * Checks if exists Setting by name
+     * 
+     * @param string $name
+     * @return bool
+     */
+    public function existSetting(string $name): bool
+    {
+        return Setting::find()->where(['name' => $name])->exists();
+    }
+    
+    /**
      * Gets all settings
      * 
      * @return array|null
@@ -77,6 +88,7 @@ class SettingRepository {
                 ->where(['domain_id' => $domain_id])
                 ->andFilterWhere(['status' => $status, 'lang_id' => $lang_id])
                 ->indexBy('id')
+                ->orderBy('status')
                 ->all();
         
         if(!$models){

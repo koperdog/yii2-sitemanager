@@ -6,7 +6,7 @@ use yii\widgets\Pjax;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Domains');
+$this->title = Yii::t('settings', 'Domains');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="domain-index">
@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Create Domain'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('settings', 'Create Domain'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php Pjax::begin(); ?>

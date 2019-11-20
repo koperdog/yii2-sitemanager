@@ -49,7 +49,7 @@ class DomainRepository {
      */
     public function getAll(): ?array
     {
-        if(!$models = Domain::findAll()){
+        if(!$models = Domain::find()->all()){
             throw new \DomainException();
         }
         return $models;

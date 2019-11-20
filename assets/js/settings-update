@@ -1,0 +1,15 @@
+"use strict";
+$(document).ready(function{
+    
+});
+
+const field_type = {1: "text", 2: "textarea", 3: "checkbox", 4: "radio", 5: "select"};
+
+function renderFields(form, fields){
+    for(key in fields){
+        if(field_type[fields[key]["field_type"]] != "textarea" && field_type[fields[key]["field_type"]] != "select") return;
+        let input = document.createElement('input');
+        input.setAttribute('type', 'hidden');
+        form.appentChild(input);
+    }
+}

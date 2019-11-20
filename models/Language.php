@@ -46,11 +46,11 @@ class Language extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'code' => Yii::t('app', 'Code'),
-            'code_local' => Yii::t('app', 'Code Local'),
-            'name' => Yii::t('app', 'Name'),
-            'status' => Yii::t('app', 'Status'),
+            'id' => Yii::t('settings', 'ID'),
+            'code' => Yii::t('settings', 'Code'),
+            'code_local' => Yii::t('settings', 'Code Local'),
+            'name' => Yii::t('settings', 'Name'),
+            'status' => Yii::t('settings', 'Status'),
         ];
     }
 

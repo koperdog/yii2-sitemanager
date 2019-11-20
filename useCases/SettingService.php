@@ -37,7 +37,7 @@ class SettingService {
         return $this->setting->saveAll($settings, $data);
     }
     
-    public function copySettingsToDomain(int $domain_id): void
+    public function copyAllToDomain(int $domain_id): void
     {
         $main_domain = $this->domain->getMain();
         $settings    = $this->setting->getAllByDomain($main_domain->id);
@@ -51,8 +51,46 @@ class SettingService {
         }
     }
     
-    public function deleteSettingsByDomain(int $domain_id): ?bool
+    public function deleteAllByDomain(int $domain_id): ?bool
     {
         return $this->setting->removeAllByDomain($domain_id);
+    }
+    
+    public function createSetting(Setting $form): bool
+    {
+        if($this->setting->existSetting($form->name)){
+            throw new \DomainException("Setting already exists");
+        }
+        
+        $setting = new Setting([
+            'name'       => $form->name,
+            'value'      => $form->value,
+            'required'   => $form->required,
+            'status'     => $form->status,
+            'field_type' => $form->field_type
+        ]);
+        
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            $this->copySettingToAllDomains($setting);
+            $transaction->commit();
+        } catch(\Throwable $e) {
+            $transaction->rollBack();
+            return false;
+        }
+        
+        return true;
+    }
+    
+    private function copySettingToAllDomains(Setting $setting): void
+    {
+        $domains = $this->domain->getAll();
+        foreach($domains as $domain){
+            $copy = new Setting();
+            $copy->attributes = $setting->attributes;
+            $copy->domain_id  = $domain->id;
+            
+            $this->setting->save($copy);
+        }
     }
 }

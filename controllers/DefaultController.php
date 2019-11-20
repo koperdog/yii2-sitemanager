@@ -31,15 +31,31 @@ class DefaultController extends \yii\web\Controller
         
         if(\Yii::$app->request->post()){
             if($this->service->saveMultiple($settings, \Yii::$app->request->post())){
-                \Yii::$app->session->setFlash('success', \Yii::t('app', 'Success save'));
+                \Yii::$app->session->setFlash('success', \Yii::t('settings', 'Success save'));
             }
             else{
-                \Yii::$app->session->setFlash('error', \Yii::t('app', 'Error save'));
+                \Yii::$app->session->setFlash('error', \Yii::t('settings/error', 'Error save'));
             }
         }
         
         return $this->render('index', [
             'settings' => $settings
         ]);
+    }
+    
+    public function actionCreate()
+    {
+        $form = new Setting();
+        
+        if($form->load(\Yii::$app->request->post()) && $form->validate()){
+            if($this->service->createSetting($form)){
+                \Yii::$app->session->setFlash('success', \Yii::t('settings', 'Success save'));
+            }
+            else{
+                \Yii::$app->session->setFlash('error', \Yii::t('settings/error', 'Error save'));
+            }
+        }
+        
+        return $this->render('create', ['model' => $form]);
     }
 }

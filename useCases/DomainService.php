@@ -48,7 +48,7 @@ class DomainService {
         $transaction = \Yii::$app->db->beginTransaction();
         try {
             $this->domain->save($domain);
-            $this->settingService->copySettingsToDomain($domain->id);
+            $this->settingService->copyAllToDomain($domain->id);
             $transaction->commit();
         } catch(\Throwable $e) {
             $transaction->rollBack();
@@ -80,7 +80,7 @@ class DomainService {
     {
         $transaction = \Yii::$app->db->beginTransaction();
         try {
-            $this->settingService->deleteSettingsByDomain($domain->id);
+            $this->settingService->deleteAllByDomain($domain->id);
             $this->domain->remove($domain);
             $transaction->commit();
         } catch(\Throwable $e) {
