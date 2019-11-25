@@ -44,7 +44,15 @@ class Setting extends \yii\db\ActiveRecord
             [['status'], 'default', 'value' => self::STATUS['CUSTOM']],
             [['lang_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::className(), 'targetAttribute' => ['lang_id' => 'id']],
             [['domain_id'], 'exist', 'skipOnError' => true, 'targetClass' => Domain::className(), 'targetAttribute' => ['domain_id' => 'id']],
+            ['value', 'checkRequired', 'skipOnEmpty' => false]
         ];
+    }
+    
+    public function checkRequired($attribute)
+    {
+        if((bool)$this->required && !strlen($attribute)){
+            $this->addError($attribute, \Yii::t('sitemanager/error', 'This field is required'));
+        }
     }
 
     /**

@@ -118,16 +118,19 @@ class DomainsController extends Controller
      */
     public function actionUpdate($id)
     {
-        $form    = $this->findModel($id);
+        $form     = $this->findModel($id);
         $settings = $this->settings->getAllByDomain($id);
 
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
             
-            if($this->service->updateDomain($form->id, \Yii::$app->request->post())){
+            if(
+                $this->service->updateDomain($form->id, \Yii::$app->request->post()) &&
+                $this->settings->saveAll($settings, \Yii::$app->request->post())
+            ){
                 \Yii::$app->session->setFlash('success', \Yii::t('sitemanager', 'Success save'));
             }
             else{
-                \Yii::$app->session->setFlash('error', \Yii::t('sitemanager/error', 'Error create'));
+                \Yii::$app->session->setFlash('error', \Yii::t('sitemanager/error', 'Error save'));
             }
             return $this->refresh();
         }

@@ -87,7 +87,7 @@ class SettingRepository {
         $models = Setting::find()
                 ->where(['domain_id' => $domain_id])
                 ->andFilterWhere(['status' => $status, 'lang_id' => $lang_id])
-                ->indexBy('id')
+                ->indexBy('name')
                 ->orderBy('status')
                 ->all();
         
