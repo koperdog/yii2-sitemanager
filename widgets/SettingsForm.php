@@ -18,14 +18,14 @@ class SettingsForm extends \yii\base\Widget
     
     public function run()
     {
-        $html = "";
-        
-        foreach(self::$html as $key => $value){
-            $html .= str_replace("{input}", $value, self::$template);
-            $html .= "\n";
-        }
-        
-        return $html;
+//        $html = "";
+//        
+//        foreach(self::$html as $key => $value){
+//            $html .= str_replace("{input}", $value, self::$template);
+//            $html .= "\n";
+//        }
+//        
+//        return $html;
     }
     
     public static function addField(string $key, string $html): void

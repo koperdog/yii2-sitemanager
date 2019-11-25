@@ -29,7 +29,7 @@ class m191117_062825_settings extends Migration
         $this->createTable('{{%domain}}', [
             'id'     => $this->primaryKey(),
             'domain' => $this->string(255)->notNull()->unique(),
-            'main'   => $this->boolean()->notNull()
+            'is_default'   => $this->boolean()->notNull()
         ]);
         
         $this->createTable('{{%language}}', [
@@ -62,7 +62,7 @@ class m191117_062825_settings extends Migration
     
     private function baseFill()
     {
-        $this->batchInsert('{{%domain}}', ['domain', 'main'], [
+        $this->batchInsert('{{%domain}}', ['domain', 'is_default'], [
            ['main', true] 
         ]);
         

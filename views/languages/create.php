@@ -5,8 +5,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model common\models\Language */
 
-$this->title = Yii::t('sitemanager', 'Create Language');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('sitemanager', 'Languages'), 'url' => ['index']];
+$this->title = Yii::t('settings', 'Create Language');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('settings', 'Languages'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="language-create">

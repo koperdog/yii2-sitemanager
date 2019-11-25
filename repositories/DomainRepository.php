@@ -79,7 +79,7 @@ class DomainRepository {
      */
     public function getMain(): Domain
     {
-        if(!$model = Domain::findOne(['main' => Domain::MAIN])){
+        if(!$model = Domain::findOne(['is_default' => Domain::MAIN])){
             throw new \DomainException();
         }
         

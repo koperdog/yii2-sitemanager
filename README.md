@@ -28,8 +28,8 @@ Add the component to your common config:
 ...
 'components' => [
     ...
-    'settings' => [
-        'class' => 'koperdog\yii2sitemanager\components\Settings',
+    'manager' => [
+        'class' => 'koperdog\yii2sitemanager\components\Manager',
     ],
     ...
 ]
@@ -40,7 +40,7 @@ and add the module to backend config:
 
 ```php
 'modules' => [
-    'settings' => [
+    'manager' => [
         'class' => 'koperdog\yii2sitemanager\Module',
     ],
 ],
@@ -61,10 +61,10 @@ Once the extension is installed, simply use it in your code by  :
 check [docs]docs another methods
 
 CRUD settings from backend:
-go to /settings
+go to /manager
 
 CRUD domains:
-go to /settings/domains
+go to /manager/domains
 
 CRUD languages:
-go to /settings/languages
+go to /manager/languages

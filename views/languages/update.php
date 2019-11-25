@@ -5,12 +5,12 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model common\models\Language */
 
-$this->title = Yii::t('sitemanager', 'Update Language: {name}', [
+$this->title = Yii::t('settings', 'Update Language: {name}', [
     'name' => $model->name,
 ]);
-$this->params['breadcrumbs'][] = ['label' => Yii::t('sitemanager', 'Languages'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('settings', 'Languages'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = Yii::t('sitemanager', 'Update');
+$this->params['breadcrumbs'][] = Yii::t('settings', 'Update');
 ?>
 <div class="language-update">
 
