@@ -9,7 +9,7 @@ class m191117_062825_settings extends Migration
 {
     const STATUS     = ['GENERAL' => 0, 'MAIN' => 1];
     /**
-     * {@inheritdoc} 
+     * {@inheritdoc}
      */
     public function safeUp()
     {
