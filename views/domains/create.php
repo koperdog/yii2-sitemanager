@@ -6,8 +6,8 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model common\models\Domain */
 
-$this->title = Yii::t('settings', 'Create Domain');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('settings', 'Domains'), 'url' => ['index']];
+$this->title = Yii::t('sitemanager', 'Create Domain');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('sitemanager', 'Domains'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="domain-create">
@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= $form->field($model, 'domain')->textInput(['maxlength' => true]) ?>
 
         <div class="form-group">
-            <?= Html::submitButton(Yii::t('settings', 'Save'), ['class' => 'btn btn-success']) ?>
+            <?= Html::submitButton(Yii::t('sitemanager', 'Save'), ['class' => 'btn btn-success']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>

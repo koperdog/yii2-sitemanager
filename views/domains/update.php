@@ -8,12 +8,12 @@ use koperdog\yii2sitemanager\models\Setting;
 /* @var $model common\models\Domain */
 /* @var $settings array koperdog\yii2sitemanager\models\Setting */
 
-$this->title = Yii::t('settings', 'Settings of Domain: {name}', [
+$this->title = Yii::t('sitemanager', 'Settings of Domain: {name}', [
     'name' => $model->domain,
 ]);
-$this->params['breadcrumbs'][] = ['label' => Yii::t('settings', 'Domains'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('sitemanager', 'Domains'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = Yii::t('settings', 'Update');
+$this->params['breadcrumbs'][] = Yii::t('sitemanager', 'Update');
 
 $this->registerJsVar('settings', $settings);
 
@@ -30,11 +30,11 @@ $this->registerJsVar('test', array_shift($settings)->getFieldTypes());
         <?= $form->field($model, 'domain')->textInput(['maxlength' => true]) ?>
         
         <div class="panel panel-default">
-            <div class="panel-heading"><?=\Yii::t('settings', 'Settings');?></div>
+            <div class="panel-heading"><?=\Yii::t('sitemanager', 'Settings');?></div>
             <div class="panel-body" id="settings_wr"></div>
         </div>
         <div class="form-group">
-            <?= Html::submitButton(Yii::t('settings', 'Save'), ['class' => 'btn btn-success']) ?>
+            <?= Html::submitButton(Yii::t('sitemanager', 'Save'), ['class' => 'btn btn-success']) ?>
         </div>
 
         <?php ActiveForm::end(); ?>
