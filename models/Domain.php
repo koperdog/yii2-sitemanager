@@ -45,9 +45,9 @@ class Domain extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('settings', 'ID'),
-            'domain' => Yii::t('settings', 'Domain'),
-            'main' => Yii::t('settings', 'Main'),
+            'id' => Yii::t('sitemanager', 'ID'),
+            'domain' => Yii::t('sitemanager', 'Domain'),
+            'main' => Yii::t('sitemanager', 'Main'),
         ];
     }
 

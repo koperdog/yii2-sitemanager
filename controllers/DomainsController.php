@@ -96,10 +96,10 @@ class DomainsController extends Controller
 
         if ($form->load(Yii::$app->request->post())){
             if($this->service->createDomain(Yii::$app->request->post('Domain'))){
-                \Yii::$app->session->setFlash('success', \Yii::t('settings', 'Success save'));
+                \Yii::$app->session->setFlash('success', \Yii::t('sitemanager', 'Success save'));
             }
             else{
-                \Yii::$app->session->setFlash('error', \Yii::t('settings/error', 'Error create'));
+                \Yii::$app->session->setFlash('error', \Yii::t('sitemanager/error', 'Error create'));
             }
             return $this->redirect(['/settings/domains']);
         }
@@ -124,10 +124,10 @@ class DomainsController extends Controller
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
             
             if($this->service->updateDomain($form->id, \Yii::$app->request->post())){
-                \Yii::$app->session->setFlash('success', \Yii::t('settings', 'Success save'));
+                \Yii::$app->session->setFlash('success', \Yii::t('sitemanager', 'Success save'));
             }
             else{
-                \Yii::$app->session->setFlash('error', \Yii::t('settings/error', 'Error create'));
+                \Yii::$app->session->setFlash('error', \Yii::t('sitemanager/error', 'Error create'));
             }
             return $this->refresh();
         }
@@ -155,10 +155,10 @@ class DomainsController extends Controller
         $model = $this->findModel($id);
         
         if($this->service->deleteDomain($model)){
-            \Yii::$app->session->setFlash('success', \Yii::t('settings', 'Success delete'));
+            \Yii::$app->session->setFlash('success', \Yii::t('sitemanager', 'Success delete'));
         }
         else{
-            \Yii::$app->session->setFlash('error', \Yii::t('settings/error', 'Error delete'));
+            \Yii::$app->session->setFlash('error', \Yii::t('sitemanager/error', 'Error delete'));
         }
 
         return $this->redirect(['index']);
@@ -177,6 +177,6 @@ class DomainsController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException(Yii::t('settings/error', 'The requested page does not exist.'));
+        throw new NotFoundHttpException(Yii::t('sitemanager/error', 'The requested page does not exist.'));
     }
 }

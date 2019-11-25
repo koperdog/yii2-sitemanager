@@ -55,14 +55,14 @@ class Setting extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('settings', 'ID'),
-            'name' => Yii::t('settings', 'Name'),
-            'value' => Yii::t('settings', 'Value'),
-            'required' => Yii::t('settings', 'Required'),
-            'status' => Yii::t('settings', 'Status'),
-            'domain_id' => Yii::t('settings', 'Domain ID'),
-            'lang_id' => Yii::t('settings', 'Lang ID'),
-            'field_type' => Yii::t('settings', 'Field Type'),
+            'id' => Yii::t('sitemanager', 'ID'),
+            'name' => Yii::t('sitemanager', 'Name'),
+            'value' => Yii::t('sitemanager', 'Value'),
+            'required' => Yii::t('sitemanager', 'Required'),
+            'status' => Yii::t('sitemanager', 'Status'),
+            'domain_id' => Yii::t('sitemanager', 'Domain ID'),
+            'lang_id' => Yii::t('sitemanager', 'Lang ID'),
+            'field_type' => Yii::t('sitemanager', 'Field Type'),
         ];
     }
 

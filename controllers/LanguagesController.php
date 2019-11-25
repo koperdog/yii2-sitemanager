@@ -122,6 +122,6 @@ class LanguagesController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException(Yii::t('settings-error', 'The requested page does not exist.'));
+        throw new NotFoundHttpException(Yii::t('sitemanager/error', 'The requested page does not exist.'));
     }
 }
