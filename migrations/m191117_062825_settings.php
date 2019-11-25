@@ -7,7 +7,6 @@ use yii\db\Migration;
  */
 class m191117_062825_settings extends Migration
 {
-    const FIELD_TYPE = ['text' => 1, 'textarea' => 2, 'checkbox' => 3, 'radio' => 4, 'select' => 5];
     const STATUS     = ['GENERAL' => 0, 'MAIN' => 1];
     /**
      * {@inheritdoc}
@@ -22,8 +21,7 @@ class m191117_062825_settings extends Migration
             'autoload'   => $this->boolean()->notNull(),
             'status'     => $this->tinyInteger(4)->notNull(),
             'domain_id'  => $this->integer(),
-            'lang_id'    => $this->integer(),
-            'field_type' => $this->tinyInteger(4)->notNull()
+            'lang_id'    => $this->integer()
         ]);
         
         $this->createTable('{{%domain}}', [
@@ -73,13 +71,12 @@ class m191117_062825_settings extends Migration
         
         $this->batchInsert(
             '{{%setting}}', 
-            ['name', 'value', 'required', 'autoload', 'status', 'domain_id', 'lang_id', 'field_type'], 
+            ['name', 'value', 'required', 'autoload', 'status', 'domain_id', 'lang_id'], 
             [
-                ['disconnected', 'false', false, true, self::STATUS['GENERAL'], null, null, self::FIELD_TYPE['checkbox']],
-                ['main_page', 1, true, true, self::STATUS['GENERAL'], null, null, self::FIELD_TYPE['select']],
+                ['disconnected', 'false', false, true, self::STATUS['GENERAL'], null, null],
+                ['main_page', 1, true, true, self::STATUS['GENERAL'], null, null],
                 
-                ['disconnected', 'false', false, true, self::STATUS['MAIN'], 1, null, self::FIELD_TYPE['checkbox']],
-                ['main_page', 1, true, true, self::STATUS['MAIN'], 1, null, self::FIELD_TYPE['select']],
+                ['disconnected', 'false', false, true, self::STATUS['MAIN'], 1, null],
             ]);
     }
 }

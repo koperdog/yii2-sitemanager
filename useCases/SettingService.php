@@ -66,8 +66,7 @@ class SettingService {
             'name'       => $form->name,
             'value'      => $form->value,
             'required'   => $form->required,
-            'status'     => $form->status,
-            'field_type' => $form->field_type
+            'status'     => $form->status
         ]);
         
         $transaction = \Yii::$app->db->beginTransaction();

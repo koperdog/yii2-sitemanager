@@ -14,7 +14,6 @@ use Yii;
  * @property int $status
  * @property int $domain_id
  * @property int $lang_id
- * @property int $field_type
  *
  * @property Language $lang
  * @property Domain $domain
@@ -23,7 +22,6 @@ class Setting extends \yii\db\ActiveRecord
 {
     
     const STATUS = ['GENERAL' => 0, 'MAIN' => 1, 'CUSTOM' => 2, 'MODULE' => 3];
-    const FIELD_TYPE = ['text' => 1, 'textarea' => 2, 'checkbox' => 3, 'radio' => 4, 'select' => 5];
     
     /**
      * {@inheritdoc}
@@ -39,9 +37,9 @@ class Setting extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'required', 'field_type'], 'required'],
+            [['name', 'required'], 'required'],
             [['value'], 'string'],
-            [['required', 'status', 'domain_id', 'lang_id', 'field_type'], 'integer'],
+            [['required', 'status', 'domain_id', 'lang_id'], 'integer'],
             [['name'], 'string', 'max' => 100],
             [['status'], 'default', 'value' => self::STATUS['CUSTOM']],
             [['lang_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::className(), 'targetAttribute' => ['lang_id' => 'id']],
@@ -62,7 +60,6 @@ class Setting extends \yii\db\ActiveRecord
             'status' => Yii::t('sitemanager', 'Status'),
             'domain_id' => Yii::t('sitemanager', 'Domain ID'),
             'lang_id' => Yii::t('sitemanager', 'Lang ID'),
-            'field_type' => Yii::t('sitemanager', 'Field Type'),
         ];
     }
 
@@ -88,13 +85,5 @@ class Setting extends \yii\db\ActiveRecord
     public function getDomain()
     {
         return $this->hasOne(Domain::className(), ['id' => 'domain_id']);
-    }
-    
-    /**
-     * @return array
-     */
-    public function getFieldTypes(): array
-    {
-        return array_flip(self::FIELD_TYPE);
     }
 }

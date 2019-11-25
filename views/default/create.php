@@ -19,11 +19,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?= $form->field($model, 'name') ?>
             <?= $form->field($model, 'required')->checkbox() ?>
-            <?= $form->field($model, 'field_type')->dropDownList(
-                    $model->getFieldTypes(),
-                    [
-                        'prompt' => \Yii::t('settings', 'Choose one field type')
-                    ]) ?>
             <?= $form->field($model, 'value')->textarea(['placeholder' => \Yii::t('settings', 'Default value')]) ?>
         
             <div class="form-group">
