@@ -6,9 +6,9 @@
  * and open the template in the editor.
  */
 
-namespace koperdog\yii2settings\useCases;
+namespace koperdog\yii2sitemanager\useCases;
 
-use koperdog\yii2settings\repositories\{
+use koperdog\yii2sitemanager\repositories\{
     SettingRepository,
     DomainRepository,
     LanguageRepository

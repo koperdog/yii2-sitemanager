@@ -1,6 +1,6 @@
 <?php
 
-namespace koperdog\yii2settings\widgets;
+namespace koperdog\yii2sitemanager\widgets;
 
 /**
  * This is just an example.

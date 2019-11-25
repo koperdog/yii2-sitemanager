@@ -2,11 +2,11 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use koperdog\yii2settings\models\Setting;
+use koperdog\yii2sitemanager\models\Setting;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Domain */
-/* @var $settings array koperdog\yii2settings\models\Setting */
+/* @var $settings array koperdog\yii2sitemanager\models\Setting */
 
 $this->title = Yii::t('settings', 'Settings of Domain: {name}', [
     'name' => $model->domain,

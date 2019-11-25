@@ -19,6 +19,7 @@ class m191117_062825_settings extends Migration
             'name'       => $this->string(100)->notNull(),
             'value'      => $this->text(),
             'required'   => $this->boolean()->notNull(),
+            'autoload'   => $this->boolean()->notNull(),
             'status'     => $this->tinyInteger(4)->notNull(),
             'domain_id'  => $this->integer(),
             'lang_id'    => $this->integer(),
@@ -72,13 +73,13 @@ class m191117_062825_settings extends Migration
         
         $this->batchInsert(
             '{{%setting}}', 
-            ['name', 'value', 'required', 'status', 'domain_id', 'lang_id', 'field_type'], 
+            ['name', 'value', 'required', 'autoload', 'status', 'domain_id', 'lang_id', 'field_type'], 
             [
-                ['disconnected', 'false', false, self::STATUS['GENERAL'], null, null, self::FIELD_TYPE['checkbox']],
-                ['main_page', 1, true, self::STATUS['GENERAL'], null, null, self::FIELD_TYPE['select']],
+                ['disconnected', 'false', false, true, self::STATUS['GENERAL'], null, null, self::FIELD_TYPE['checkbox']],
+                ['main_page', 1, true, true, self::STATUS['GENERAL'], null, null, self::FIELD_TYPE['select']],
                 
-                ['disconnected', 'false', false, self::STATUS['MAIN'], 1, null, self::FIELD_TYPE['checkbox']],
-                ['main_page', 1, true, self::STATUS['MAIN'], 1, null, self::FIELD_TYPE['select']],
+                ['disconnected', 'false', false, true, self::STATUS['MAIN'], 1, null, self::FIELD_TYPE['checkbox']],
+                ['main_page', 1, true, true, self::STATUS['MAIN'], 1, null, self::FIELD_TYPE['select']],
             ]);
     }
 }

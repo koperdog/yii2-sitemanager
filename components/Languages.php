@@ -1,7 +1,5 @@
 <?php
 
-namespace koperdog\yii2settings\fields;
-
 /*
  * Copyright 2019 Koperdog <koperdog@github.com>.
  *
@@ -18,12 +16,14 @@ namespace koperdog\yii2settings\fields;
  * limitations under the License.
  */
 
+namespace koperdog\yii2sitemanager\components;
+
 /**
- * class for Render input text
+ * Description of Languages
  *
  * @author Koperdog <koperdog@github.com>
- * @version 1.0
  */
-class TextInput extends base\BaseInput{
-    // was implemented in Base Input
+class Languages extends \yii\base\Component
+{
+    //put your code here
 }

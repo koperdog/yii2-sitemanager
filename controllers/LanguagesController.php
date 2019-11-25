@@ -1,6 +1,6 @@
 <?php
 
-namespace koperdog\yii2settings\controllers;
+namespace koperdog\yii2sitemanager\controllers;
 
 use Yii;
 use common\models\Language;

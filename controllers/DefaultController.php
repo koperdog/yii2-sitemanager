@@ -1,10 +1,10 @@
 <?php
 
-namespace koperdog\yii2settings\controllers;
+namespace koperdog\yii2sitemanager\controllers;
 
-use koperdog\yii2settings\useCases\SettingService;
-use koperdog\yii2settings\repositories\SettingRepository;
-use \koperdog\yii2settings\models\Setting;
+use koperdog\yii2sitemanager\useCases\SettingService;
+use koperdog\yii2sitemanager\repositories\SettingRepository;
+use \koperdog\yii2sitemanager\models\Setting;
 
 class DefaultController extends \yii\web\Controller
 {

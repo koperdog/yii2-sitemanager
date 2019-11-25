@@ -1,15 +1,15 @@
 <?php
 
-namespace koperdog\yii2settings;
+namespace koperdog\yii2sitemanager;
 
 class Module extends \yii\base\Module
 {
-    const MODULE_NAME = "settings";
+    const MODULE_NAME = "sitemanager";
     
     /**
      * {@inheritdoc}
      */
-    public $controllerNamespace = 'koperdog\yii2settings\controllers';
+    public $controllerNamespace = 'koperdog\yii2sitemanager\controllers';
 
     /**
      * {@inheritdoc}

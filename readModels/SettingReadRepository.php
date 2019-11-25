@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-namespace koperdog\yii2settings\readModels;
+namespace koperdog\yii2sitemanager\readModels;
 
-use koperdog\yii2settings\models\Setting;
+use koperdog\yii2sitemanager\models\Setting;
 
 /**
  * Repository for Setting model

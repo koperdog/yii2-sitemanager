@@ -16,10 +16,10 @@
  * limitations under the License.
  */
 
-namespace koperdog\yii2settings\components;
+namespace koperdog\yii2sitemanager\components;
 
-use koperdog\yii2settings\models\Setting;
-use koperdog\yii2settings\readModels\{
+use koperdog\yii2sitemanager\models\Setting;
+use koperdog\yii2sitemanager\readModels\{
     SettingReadRepository,
     DomainReadRepository,
     LanguageReadRepository
@@ -63,7 +63,7 @@ class Settings extends \yii\base\Component
      * 
      * Model for read settings, implements repository design
      * 
-     * @var type koperdog\yii2settings\readModels\SettingReadRepository
+     * @var type koperdog\yii2sitemanager\readModels\SettingReadRepository
      */
     private $settings;
     
@@ -72,7 +72,7 @@ class Settings extends \yii\base\Component
      * 
      * Model for read domain, implements repository design
      * 
-     * @var type koperdog\yii2settings\readModels\DomainReadRepository
+     * @var type koperdog\yii2sitemanager\readModels\DomainReadRepository
      */
     private $domains;
     
@@ -81,16 +81,9 @@ class Settings extends \yii\base\Component
      * 
      * Model for read languages, implements repository design
      * 
-     * @var type koperdog\yii2settings\readModels\LanguageReadRepository
+     * @var type koperdog\yii2sitemanager\readModels\LanguageReadRepository
      */
     private $languages;
- 
-    /**
-     * Current domain, SERVER_HOST
-     * 
-     * @var type string
-     */
-    public $currentDomain = "";
     
     /**
      * Component constructor 
@@ -99,7 +92,7 @@ class Settings extends \yii\base\Component
      * @param DomainReadRepository $domains
      * @param LanguageReadRepository $languages
      */
-    public function __construct(SettingReadRepository $settings, DomainReadRepository $domains, LanguageReadRepository $languages)
+    public function __construct(Domains $domains, Languages $languages,  SettingReadRepository $settings)
     {
         parent::__construct();
         
@@ -108,8 +101,6 @@ class Settings extends \yii\base\Component
         $this->settings  = $settings;
         $this->domains   = $domains;
         $this->languages = $languages;
-        
-        $this->currentDomain = \Yii::$app->getRequest()->serverName;
 
         $this->loadGeneralSettings();
         $this->loadMainDomainSettings();

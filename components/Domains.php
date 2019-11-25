@@ -1,7 +1,5 @@
 <?php
 
-namespace koperdog\yii2settings\fields\base;
-
 /*
  * Copyright 2019 Koperdog <koperdog@github.com>.
  *
@@ -18,15 +16,30 @@ namespace koperdog\yii2settings\fields\base;
  * limitations under the License.
  */
 
+namespace koperdog\yii2sitemanager\components;
+
 /**
- * Interface for input render
- * 
+ * Description of Domain
+ *
  * @author Koperdog <koperdog@github.com>
  */
-interface Input {
+class Domains extends \yii\base\Component
+{
+    /**
+     * Current domain, SERVER_HOST
+     * 
+     * @var type string
+     */
+    private $current;
     
-    public function render(): string;
-    public function setAttribute(string $name, string $value): void;
-    public function setAttributes(array $attr): void;
-    public function removeAttrbiute(string $name): void;
+    public function __construct() {
+        parent::__construct();
+        
+        $this->current = \Yii::$app->getRequest()->serverName;
+    }
+    
+    public function getDomain(): string
+    {
+        return $this->current;
+    }
 }

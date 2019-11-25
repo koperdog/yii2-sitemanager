@@ -10,13 +10,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist koperdog/yii2-settings "*"
+php composer.phar require --prefer-dist koperdog/yii2-sitemanager "*"
 ```
 
 or add
 
 ```
-"koperdog/yii2-settings": "*"
+"koperdog/yii2-sitemanager": "*"
 ```
 
 to the require section of your `composer.json` file.
@@ -29,7 +29,7 @@ Add the component to your common config:
 'components' => [
     ...
     'settings' => [
-        'class' => 'koperdog\yii2settings\components\Settings',
+        'class' => 'koperdog\yii2sitemanager\components\Settings',
     ],
     ...
 ]
@@ -41,14 +41,14 @@ and add the module to backend config:
 ```php
 'modules' => [
     'settings' => [
-        'class' => 'koperdog\yii2settings\Module',
+        'class' => 'koperdog\yii2sitemanager\Module',
     ],
 ],
 ```
 
 Then start the migration (console):
 ```php
-php yii migrate --migrationPath=@vendor/koperdog/yii2-settings/migrations
+php yii migrate --migrationPath=@vendor/koperdog/yii2-sitemanager/migrations
 ```
 Usage
 -----

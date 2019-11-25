@@ -1,6 +1,6 @@
 <?php
 
-namespace koperdog\yii2settings\models;
+namespace koperdog\yii2sitemanager\models;
 
 use Yii;
 

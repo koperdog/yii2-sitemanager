@@ -1,5 +1,5 @@
 {
-    "name": "koperdog/yii2-settings",
+    "name": "koperdog/yii2-sitemanager",
     "description": "Settings for multilanguage, multidomain site",
     "type": "yii2-extension",
     "keywords": ["yii2","t2cms","settings", "multidomain", "multilanguage"],
@@ -18,7 +18,7 @@
     },
     "autoload": {
         "psr-4": {
-            "koperdog\\yii2settings\\": ""
+            "koperdog\\yii2sitemanager\\": ""
         }
     }
 }

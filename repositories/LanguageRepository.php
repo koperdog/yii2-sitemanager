@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-namespace koperdog\yii2settings\repositories;
+namespace koperdog\yii2sitemanager\repositories;
 
-use koperdog\yii2settings\models\Language;
+use koperdog\yii2sitemanager\models\Language;
 
 /**
  * Repository for Language model

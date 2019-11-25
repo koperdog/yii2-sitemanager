@@ -1,6 +1,6 @@
 <?php
 
-namespace koperdog\yii2settings\controllers;
+namespace koperdog\yii2sitemanager\controllers;
 
 use Yii;
 use yii\data\ActiveDataProvider;
@@ -8,10 +8,10 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
-use koperdog\yii2settings\useCases\DomainService;
-use koperdog\yii2settings\repositories\DomainRepository;
-use koperdog\yii2settings\repositories\SettingRepository;
-use koperdog\yii2settings\models\Domain;
+use koperdog\yii2sitemanager\useCases\DomainService;
+use koperdog\yii2sitemanager\repositories\DomainRepository;
+use koperdog\yii2sitemanager\repositories\SettingRepository;
+use koperdog\yii2sitemanager\models\Domain;
 
 /**
  * DomainController implements the CRUD actions for Domain model.
@@ -92,7 +92,7 @@ class DomainsController extends Controller
      */
     public function actionCreate()
     {
-        $form = new \koperdog\yii2settings\models\Domain();
+        $form = new \koperdog\yii2sitemanager\models\Domain();
 
         if ($form->load(Yii::$app->request->post())){
             if($this->service->createDomain(Yii::$app->request->post('Domain'))){
@@ -140,7 +140,7 @@ class DomainsController extends Controller
     
     public function actionTest()
     {
-        return \koperdog\yii2settings\widgets\SettingsForm::widget();
+        return \koperdog\yii2sitemanager\widgets\SettingsForm::widget();
     }
 
     /**
