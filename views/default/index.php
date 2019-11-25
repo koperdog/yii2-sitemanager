@@ -13,5 +13,7 @@ use yii\widgets\ActiveForm;
 
     <?=$form->field($settings['main_page'], "[main_page]value")->dropDownList(["Главная страница", "Тестовая страница"])->label("Main page");?>
 
+    <?=$form->field($settings['title_separator'], "[title_separator]value")->label("Title separator");?>
+
     <?= Html::submitButton(Yii::t('sitemanager', 'Save'), ['class' => 'btn btn-primary']) ?>
 <?php ActiveForm::end();?>

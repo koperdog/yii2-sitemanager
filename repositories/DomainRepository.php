@@ -77,7 +77,7 @@ class DomainRepository {
      * @return Domain
      * @throws \DomainException
      */
-    public function getMain(): Domain
+    public function getDefault(): Domain
     {
         if(!$model = Domain::findOne(['is_default' => Domain::MAIN])){
             throw new \DomainException();

@@ -41,6 +41,7 @@ class Setting extends \yii\db\ActiveRecord
             [['value'], 'string'],
             [['required', 'status', 'domain_id', 'lang_id'], 'integer'],
             [['name'], 'string', 'max' => 100],
+            [['autoload'], 'default', 'value' => false],
             [['status'], 'default', 'value' => self::STATUS['CUSTOM']],
             [['lang_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::className(), 'targetAttribute' => ['lang_id' => 'id']],
             [['domain_id'], 'exist', 'skipOnError' => true, 'targetClass' => Domain::className(), 'targetAttribute' => ['domain_id' => 'id']],

@@ -66,7 +66,7 @@ class SettingRepository {
     {
         $models = Setting::find()
                 ->where(['status' => $status])
-                ->indexBy('id')
+                ->indexBy('name')
                 ->all();
         
         if(!$models){

@@ -77,9 +77,9 @@ class DomainReadRepository {
      * @return array
      * @throws \DomainException
      */
-    public function getMain(): array
+    public function getDefault(): array
     {
-        if(!$model = Domain::find()->where(['main' => Domain::MAIN])->asArray()->one()){
+        if(!$model = Domain::find()->where(['is_default' => Domain::MAIN])->asArray()->one()){
             throw new \DomainException();
         }
         

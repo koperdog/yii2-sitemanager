@@ -39,7 +39,7 @@ class SettingService {
     
     public function copyAllToDomain(int $domain_id): void
     {
-        $main_domain = $this->domain->getMain();
+        $main_domain = $this->domain->getDefault();
         $settings    = $this->setting->getAllByDomain($main_domain->id);
         
         foreach($settings as $setting){

@@ -29,6 +29,8 @@ $this->params['breadcrumbs'][] = Yii::t('sitemanager', 'Update');
                 
                 <?=$form->field($settings['disconnected'], "[disconnected]value")->checkbox(['label' => false])->label("Disconnected");?>
                 
+                <?=$form->field($settings['title_separator'], "[title_separator]value")->label("Title separator");?>
+                
                 <p>
                     <?= Html::a(Yii::t('sitemanager', 'Create Setting'), ['default/create'], ['class' => 'btn btn-success']) ?>
                 </p>

@@ -36,7 +36,7 @@ class Manager  extends \yii\base\Component
         parent::__construct();
         $this->domains  = new Domains();
         $this->language = new Languages(); 
-        $this->settings = new Settings($this->domain, $this->language);
+        $this->settings = new Settings($this->domains, $this->language);
         
         $this->domain = $this->domains->getDomain();
     }

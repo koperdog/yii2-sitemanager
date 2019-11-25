@@ -65,7 +65,16 @@ class Settings extends \yii\base\Component
      * 
      * @var type koperdog\yii2sitemanager\readModels\SettingReadRepository
      */
-    private $settings;
+    private $settingsRepository;
+    
+    /**
+     * Model for read domains data
+     * 
+     * Model for read domains, implements repository design
+     * 
+     * @var type koperdog\yii2sitemanager\readModels\DomainReadRepository
+     */
+    private $domainsRepository;
     
     /**
      * Model for read domain data
@@ -92,15 +101,17 @@ class Settings extends \yii\base\Component
      * @param DomainReadRepository $domains
      * @param LanguageReadRepository $languages
      */
-    public function __construct(Domains $domains, Languages $languages,  SettingReadRepository $settings)
+    public function __construct(Domains $domains, Languages $languages)
     {
         parent::__construct();
         
         $this->cache = \Yii::$app->cache;
         
-        $this->settings  = $settings;
         $this->domains   = $domains;
         $this->languages = $languages;
+        
+        $this->settingsRepository  = new SettingReadRepository();
+        $this->domainsRepository   = new DomainReadRepository();
 
         $this->loadGeneralSettings();
         $this->loadMainDomainSettings();
@@ -117,8 +128,8 @@ class Settings extends \yii\base\Component
      */
     public function get(string $name): ?array
     {
-        if(isset($this->data['domains'][$this->currentDomain][$name])){
-            $tmp = $this->data['domains'][$this->currentDomain][$name];
+        if(isset($this->data['domains'][$this->domains->getDomain()][$name])){
+            $tmp = $this->data['domains'][$this->domains->getDomain()][$name];
         }
         else if(isset($this->data['domains'][self::MAIN_DOMAIN][$name])){
             $tmp = $this->data['domains'][self::MAIN_DOMAIN][$name];
@@ -140,8 +151,8 @@ class Settings extends \yii\base\Component
      */
     public function getValue(string $name): ?string
     {        
-        if(isset($this->data['domains'][$this->currentDomain][$name]['value'])){
-            $tmp = $this->data['domains'][$this->currentDomain][$name]['value'];
+        if(isset($this->data['domains'][$this->domains->getDomain()][$name]['value'])){
+            $tmp = $this->data['domains'][$this->domains->getDomain()][$name]['value'];
         }
         else if(isset($this->data['domains'][self::MAIN_DOMAIN][$name]['value'])){
             $tmp = $this->data['domains'][self::MAIN_DOMAIN][$name]['value'];
@@ -181,7 +192,7 @@ class Settings extends \yii\base\Component
      */
     public function getAllByDomain(): ?array
     {
-        return $this->data['domains'][$this->currentDomain];
+        return $this->data['domains'][$this->domains->getDomain()];
     }
     
     /**
@@ -195,7 +206,7 @@ class Settings extends \yii\base\Component
         $data = $this->cache->get($key);
 
         if ($data === false) {
-            $data = $this->settings->getAllByStatus(Setting::STATUS['GENERAL']);
+            $data = $this->settingsRepository->getAllByStatus(Setting::STATUS['GENERAL']);
             $this->cache->set($key, $data);
         }
         
@@ -213,8 +224,8 @@ class Settings extends \yii\base\Component
         $data = $this->cache->get($key);
 
         if ($data === false) {
-            $domain = $this->domains->getMain();
-            $data = $this->settings->getAllByDomain($domain['id']);
+            $domain = $this->domainsRepository->getDefault();
+            $data = $this->settingsRepository->getAllByDomain($domain['id']);
             $this->cache->set($key, $data);
         }
         
@@ -228,14 +239,14 @@ class Settings extends \yii\base\Component
      */
     private function loadCurrentSettings(): void
     {
-        $key = self::KEY_CACHE . "." . $this->currentDomain;
+        $key = self::KEY_CACHE . "." . $this->domains->getDomain();
         $data = $this->cache->get($key);
 
         if ($data === false) {
             
             try{
-                $domain = $this->domains->getByDomain($this->currentDomain);
-                $data = $this->settings->getAllByDomain($domain['id']);
+                $domain = $this->domainsRepository->getByDomain($this->domains->getDomain());
+                $data = $this->settingsRepository->getAllByDomain($domain['id']);
             }
             catch(\DomainException $e){
                 return;
@@ -244,6 +255,6 @@ class Settings extends \yii\base\Component
             $this->cache->set($key, $data);
         }
         
-        $this->data['domains'][$this->currentDomain] = $data;
+        $this->data['domains'][$this->domains->getDomain()] = $data;
     }
 }

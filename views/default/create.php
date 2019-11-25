@@ -19,6 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?= $form->field($model, 'name') ?>
             <?= $form->field($model, 'required')->checkbox() ?>
+            <?= $form->field($model, 'autoload')->checkbox() ?>
             <?= $form->field($model, 'value')->textarea(['placeholder' => \Yii::t('sitemanager', 'Default value')]) ?>
         
             <div class="form-group">

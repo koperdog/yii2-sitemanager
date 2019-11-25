@@ -101,7 +101,7 @@ class DomainsController extends Controller
             else{
                 \Yii::$app->session->setFlash('error', \Yii::t('sitemanager/error', 'Error create'));
             }
-            return $this->redirect(['/settings/domains']);
+            return $this->redirect(['manager/domains']);
         }
 
         return $this->render('create', [
