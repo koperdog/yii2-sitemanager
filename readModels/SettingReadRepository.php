@@ -98,11 +98,25 @@ class SettingReadRepository {
      * @return Setting
      * @throws \DomainException
      */
-    public function get(int $id): Setting
+    public function getById(int $id): array
     {
         if(!$model = Setting::find()->where(['id' => $id])->asArray()->one()){
             throw new \DomainException();
         }
+        
+        return $model;
+    }
+    
+    public function getByDomain(string $name, int $domain_id = null): ?array
+    {        
+        $model = Setting::find()->where(['name' => $name, 'domain_id' => $domain_id])->asArray()->one();
+        
+        return $model;
+    }
+    
+    public function getByStatus(string $name, int $status = Setting::STATUS['GENERAL']): ?array
+    {
+        $model = Setting::find()->where(['name' => $name, 'status' => $status])->asArray()->one();
         
         return $model;
     }
