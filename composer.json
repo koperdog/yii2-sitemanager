@@ -5,7 +5,7 @@
     "keywords": ["yii2","t2cms","settings", "multidomain", "multilanguage"],
     "license": "Apache-2.0",
     "stability":"stable",
-    "version":"1.0.1",
+    "version":"1.0.0",
     "authors": [
         {
             "name": "koperdog",
