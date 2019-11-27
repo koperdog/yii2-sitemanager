@@ -55,8 +55,9 @@ class Settings extends \yii\base\Component
      * All settings
      * 
      * @var type array
+     * @deprecated since version 1.0.1
      */
-    private $data       = [];
+    //private $data       = [];
     
     /**
      * Model for read settings data
@@ -112,10 +113,10 @@ class Settings extends \yii\base\Component
         
         $this->settingsRepository  = new SettingReadRepository();
         $this->domainsRepository   = new DomainReadRepository();
-
-        $this->loadGeneralSettings();
-        $this->loadMainDomainSettings();
-        $this->loadCurrentSettings();
+        
+        $tmp = array_merge($this->loadGeneralSettings(), $this->loadMainDomainSettings(), $this->loadCurrentSettings());
+        
+        $this->loadToParams($tmp);
     }
     
     /**
@@ -124,21 +125,15 @@ class Settings extends \yii\base\Component
      * Gets setting by name, first for the domain, then for the main domain, then for the entire site
      * 
      * @param string $name
-     * @return array|null
+     * @return mixed
      */
-    public function get(string $name): ?array
+    public function get(string $name)
     {
-        if(isset($this->data['domains'][$this->domains->getDomain()][$name])){
-            $tmp = $this->data['domains'][$this->domains->getDomain()][$name];
-        }
-        else if(isset($this->data['domains'][self::MAIN_DOMAIN][$name])){
-            $tmp = $this->data['domains'][self::MAIN_DOMAIN][$name];
-        }
-        else{
-            $tmp = $this->data['general'][$name];
+        if(!$data = \Yii::$app->params[$name]){
+            $data = $this->loadSetting($name);
         }
         
-        return $tmp;
+        return $data;
     }
     
     /**
@@ -148,20 +143,11 @@ class Settings extends \yii\base\Component
      * 
      * @param string $name
      * @return string|null
+     * @deprecated since version 1.0.1
      */
     public function getValue(string $name): ?string
-    {        
-        if(isset($this->data['domains'][$this->domains->getDomain()][$name]['value'])){
-            $tmp = $this->data['domains'][$this->domains->getDomain()][$name]['value'];
-        }
-        else if(isset($this->data['domains'][self::MAIN_DOMAIN][$name]['value'])){
-            $tmp = $this->data['domains'][self::MAIN_DOMAIN][$name]['value'];
-        }
-        else{
-            $tmp = $this->data['general'][$name]['value'];
-        }
-        
-        return $tmp;
+    {
+        return \Yii::$app->params[$name]['value'];
     }
     
     /**
@@ -171,7 +157,7 @@ class Settings extends \yii\base\Component
      */
     public function getAll(): ?array
     {
-        return $this->data;
+        return \Yii::$app->params;
     }
     
     /**
@@ -179,28 +165,30 @@ class Settings extends \yii\base\Component
      * 
      * @param type $name
      * @return string|null
+     * @deprecated since version 1.0.1
      */
-    public function getGeneral($name): ?string
-    {
-        return $this->data['general'][$name]['value'];
-    }
-    
+//    public function getGeneral($name): ?string
+//    {
+//        return $this->data['general'][$name]['value'];
+//    }
+
     /**
      * Gets all settings for the current domain
      * 
      * @return array|null
+     * @deprecated since version 1.0.1
      */
-    public function getAllByDomain(): ?array
-    {
-        return $this->data['domains'][$this->domains->getDomain()];
-    }
+//    public function getAllByDomain(): ?array
+//    {
+//        return $this->data['domains'][$this->domains->getDomain()];
+//    }
     
     /**
      * Loads general settings
      * 
      * @return void
      */
-    private function loadGeneralSettings(): void
+    private function loadGeneralSettings(): array
     {
         $key  = self::KEY_CACHE . "." . Setting::STATUS['GENERAL'];
         $data = $this->cache->get($key);
@@ -210,7 +198,7 @@ class Settings extends \yii\base\Component
             $this->cache->set($key, $data);
         }
         
-        $this->data['general'] = $data;
+        return (array)$data;
     }
     
     /**
@@ -218,26 +206,26 @@ class Settings extends \yii\base\Component
      * 
      * @return void
      */
-    private function loadMainDomainSettings(): void
+    private function loadMainDomainSettings(): array
     {
         $key = self::KEY_CACHE . "." . self::MAIN_DOMAIN;
         $data = $this->cache->get($key);
 
         if ($data === false) {
-            $domain = $this->domainsRepository->getDefault();
+            $domain = $this->domains->getDefault();
             $data = $this->settingsRepository->getAllByDomain($domain['id']);
             $this->cache->set($key, $data);
         }
         
-        $this->data['domains'][self::MAIN_DOMAIN] = $data;
+        return (array)$data;
     }
     
     /**
      * Loads settings for the current domain
      * 
-     * @return void
+     * @return array
      */
-    private function loadCurrentSettings(): void
+    private function loadCurrentSettings(): array
     {
         $key = self::KEY_CACHE . "." . $this->domains->getDomain();
         $data = $this->cache->get($key);
@@ -249,12 +237,43 @@ class Settings extends \yii\base\Component
                 $data = $this->settingsRepository->getAllByDomain($domain['id']);
             }
             catch(\DomainException $e){
-                return;
+                return [];
             }
             
             $this->cache->set($key, $data);
         }
         
-        $this->data['domains'][$this->domains->getDomain()] = $data;
+        return (array)$data;
+    }
+    
+    private function loadSetting(string $name): ?array
+    {
+        $key = self::KEY_CACHE . "." . $this->domains->getDomain() . "." . $name;
+        $data = $this->cache->get($key);
+        
+        if($data === false){
+            $data = $this->settingsRepository->getByDomain($name, $this->domains->getDomain());
+            if(!$data){
+                $data = $this->settingsRepository->getByDomain($name, $this->domains->getDefault());
+                if(!$data){
+                    $data = $this->settingsRepository->getByStatus($name, Setting::STATUS['GENERAL']);
+                }
+            }
+            
+            $this->cache->set($key, $data);
+        }
+        
+        \Yii::$app->params[$name] = $data; 
+        
+        return $data;
+    }
+    
+    private function loadToParams(array &$data): void
+    {
+        foreach($data as $key => $value){
+            \Yii::$app->params[$key] = $value;
+        }
+        
+        unset($data);
     }
 }

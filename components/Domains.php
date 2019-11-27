@@ -18,6 +18,8 @@
 
 namespace koperdog\yii2sitemanager\components;
 
+use koperdog\yii2sitemanager\readModels\DomainReadRepository;
+
 /**
  * Description of Domain
  *
@@ -32,14 +34,24 @@ class Domains extends \yii\base\Component
      */
     private $current;
     
-    public function __construct() {
+    private $service;
+    
+    public function __construct(DomainService $service, DomainReadRepository $repository) {
         parent::__construct();
         
         $this->current = \Yii::$app->getRequest()->serverName;
+        
+        $this->service    = $service;
+        $this->repository = $repository;
     }
     
     public function getDomain(): string
     {
         return $this->current;
+    }
+    
+    public function getDefault(): array
+    {
+        return $this->repository->getDefault();
     }
 }

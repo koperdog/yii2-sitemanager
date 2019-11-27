@@ -75,11 +75,11 @@ class SettingReadRepository {
      * @return array|null
      * @throws \DomainException
      */
-    public function getAllByDomain(int $domain_id, int $status = null, int $lang_id = null): ?array
+    public function getAllByDomain(int $domain_id, int $status = null, int $lang_id = null, $autoload = true): ?array
     {
         $models = Setting::find()
                 ->where(['domain_id' => $domain_id])
-                ->andFilterWhere(['status' => $status, 'lang_id' => $lang_id])
+                ->andFilterWhere(['status' => $status, 'lang_id' => $lang_id, 'autoload' => $autoload])
                 ->indexBy('name')
                 ->asArray()
                 ->all();
@@ -107,14 +107,18 @@ class SettingReadRepository {
         return $model;
     }
     
-    public function getByDomain(string $name, int $domain_id = null): ?array
+    public function getByDomain(string $name, int $domain_id = null, $autoload = true): ?array
     {        
-        $model = Setting::find()->where(['name' => $name, 'domain_id' => $domain_id])->asArray()->one();
+        $model = Setting::find()
+                ->where(['name' => $name, 'domain_id' => $domain_id])
+                ->andFilterWhere(['autoload' => $autoload])
+                ->asArray()
+                ->one();
         
         return $model;
     }
     
-    public function getByStatus(string $name, int $status = Setting::STATUS['GENERAL']): ?array
+    public function getByStatus(string $name, int $status = Setting::STATUS['GENERAL'], $autoload = true): ?array
     {
         $model = Setting::find()->where(['name' => $name, 'status' => $status])->asArray()->one();
         
