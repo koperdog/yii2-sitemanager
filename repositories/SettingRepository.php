@@ -98,6 +98,24 @@ class SettingRepository {
         return $models;
     }
     
+    public function getAllByName(string $name): ?array
+    {
+        $models = Setting::find()
+                ->where(['name' => $name])
+                ->all();
+        
+        if(!$models){
+            throw new DomainException();
+        }
+        
+        return $models;
+    }
+    
+    public function deleteAllByName(string $name): ?bool
+    {
+        return Setting::deleteAll(['name' => $name, 'status' => Setting::STATUS['CUSTOM']]);
+    }
+    
     /**
      * Gets setting by id
      * 

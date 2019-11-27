@@ -28,12 +28,26 @@ Add the component to your common config:
 ...
 'components' => [
     ...
-    'manager' => [
-        'class' => 'koperdog\yii2sitemanager\components\Manager',
+    'settings' => [
+        'class' => 'koperdog\yii2sitemanager\components\Settings',
+    ],
+    'domains' => [
+        'class' => 'koperdog\yii2sitemanager\components\Domains',
+    ],
+    'languages' => [
+        'class' => 'koperdog\yii2sitemanager\components\Languages',
     ],
     ...
 ]
 ... 
+```
+
+also you should add component to bootstrap config:
+
+```php
+...
+'bootstrap' => ['settings'],
+...
 ```
 
 and add the module to backend config:
@@ -55,11 +69,19 @@ Usage
 
 Once the extension is installed, simply use it in your code by  :
 
+autoloaded settings:
+```php
+\Yii::$app->params['setting_name'];
+```
+
+If you are not sure if the setting is autoload:
 ```php
 \Yii::$app->settings->get('setting_name');
 ```
-check [docs]docs another methods
 
+<details>
+  <summary>CRUD and URL config</summary>
+  
 CRUD settings from backend:
 go to /manager
 
@@ -68,3 +90,18 @@ go to /manager/domains
 
 CRUD languages:
 go to /manager/languages
+
+also, if you want use standart CRUD, you can add to Url rule config:
+
+```php
+CRUD settings from backend:
+go to /manager
+
+CRUD domains:
+go to /manager/domains
+
+CRUD languages:
+go to /manager/languages
+```
+  
+</details>

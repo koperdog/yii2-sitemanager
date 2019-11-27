@@ -97,11 +97,11 @@ class DomainsController extends Controller
         if ($form->load(Yii::$app->request->post())){
             if($this->service->createDomain(Yii::$app->request->post('Domain'))){
                 \Yii::$app->session->setFlash('success', \Yii::t('sitemanager', 'Success save'));
+                return $this->redirect(['manager/domains']);
             }
             else{
                 \Yii::$app->session->setFlash('error', \Yii::t('sitemanager/error', 'Error create'));
             }
-            return $this->redirect(['manager/domains']);
         }
 
         return $this->render('create', [

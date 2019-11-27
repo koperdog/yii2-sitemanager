@@ -49,10 +49,10 @@ class Setting extends \yii\db\ActiveRecord
         ];
     }
     
-    public function checkRequired($attribute)
+    public function checkRequired()
     {
-        if((bool)$this->required && !strlen($attribute)){
-            $this->addError($attribute, \Yii::t('sitemanager/error', 'This field is required'));
+        if((bool)$this->required && !strlen($this->value)){
+            $this->addError('value', \Yii::t('sitemanager/error', 'This field is required'));
         }
     }
 

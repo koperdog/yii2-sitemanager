@@ -2,7 +2,6 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use koperdog\yii2sitemanager\models\Setting;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Domain */
@@ -29,13 +28,32 @@ $this->params['breadcrumbs'][] = Yii::t('sitemanager', 'Update');
                 
                 <?=$form->field($settings['disconnected'], "[disconnected]value")->checkbox(['label' => false])->label("Disconnected");?>
                 
-                <?=$form->field($settings['title_separator'], "[title_separator]value")->label("Title separator");?>
+            </div>
+        </div>
+        
+        <div class="panel panel-default">
+            <div class="panel-heading"><?=\Yii::t('sitemanager', 'Custom Settings');?></div>
+            <div class="panel-body" id="settings_wr">
+                
+                <?php foreach($settings as $index => $setting):?>
+                <?php if($setting->status == \koperdog\yii2sitemanager\models\Setting::STATUS['CUSTOM']):?>
+                
+                <div class="custom-setting-wr">
+                    <?=$form->field($setting, "[$index]value", ['options' => ['class' => ($setting->required? 'required' : '')]])->textarea()->label($index);?>
+                    <div class="controls_wr">
+                        <a href="<?= yii\helpers\Url::to(['default/update', 'id' => $setting->id]);?>"<i class="fa fa-gear"></i></a>
+                        <a href="<?= yii\helpers\Url::to(['default/delete', 'id' => $setting->id]);?>"<i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <?php endif;?>
+                <?php endforeach;?>
                 
                 <p>
                     <?= Html::a(Yii::t('sitemanager', 'Create Setting'), ['default/create'], ['class' => 'btn btn-success']) ?>
                 </p>
             </div>
         </div>
+        
         <div class="form-group">
             <?= Html::submitButton(Yii::t('sitemanager', 'Save'), ['class' => 'btn btn-success']) ?>
         </div>

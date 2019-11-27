@@ -37,6 +37,20 @@ class SettingService {
         return $this->setting->saveAll($settings, $data);
     }
     
+    public function save(Setting $setting): bool
+    {
+        $transaction = \Yii::$app->db->beginTransaction();
+        try{
+            $this->setting->save($setting);
+            $transaction->commit();
+        } catch(\Throwable $e) {
+            $transaction->rollBack();
+            return false;
+        }
+        
+        return true;
+    }
+    
     public function copyAllToDomain(int $domain_id): void
     {
         $main_domain = $this->domain->getDefault();
@@ -49,6 +63,21 @@ class SettingService {
             
             $this->setting->save($new);
         }
+    }
+    
+    public function delete(int $id): bool
+    {
+        $transaction = \Yii::$app->db->beginTransaction();
+        try{
+            $setting = $this->setting->get($id);            
+            $this->setting->deleteAllByName($setting->name);
+            $transaction->commit();
+        } catch(\Throwable $e) {
+            $transaction->rollBack();
+            return false;
+        }
+        
+        return true;
     }
     
     public function deleteAllByDomain(int $domain_id): ?bool

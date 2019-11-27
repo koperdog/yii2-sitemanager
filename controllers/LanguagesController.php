@@ -3,7 +3,7 @@
 namespace koperdog\yii2sitemanager\controllers;
 
 use Yii;
-use common\models\Language;
+use koperdog\yii2sitemanager\models\Language;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

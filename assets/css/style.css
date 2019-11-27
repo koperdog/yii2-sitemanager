@@ -1,0 +1,15 @@
+.custom-setting-wr{
+	position: relative;
+}
+
+.custom-setting-wr .controls_wr{
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.custom-setting-wr .required label:after{
+	content: '*';
+	color:red;
+	margin-left:7px;
+}

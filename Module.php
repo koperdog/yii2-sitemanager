@@ -24,6 +24,7 @@ class Module extends \yii\base\Module
     private function registerTranslations()
     {
         if (!isset(\Yii::$app->i18n->translations[self::MODULE_NAME . '*'])) {
+            
             \Yii::$app->i18n->translations[self::MODULE_NAME . '*'] = [
                 'class'    => \yii\i18n\PhpMessageSource::class,
                 'basePath' => __DIR__ . '/messages',

@@ -23,5 +23,6 @@ return [
     "Update Language: {name}" => "Обновить язык: {name}",
     "STATUS_GENERAL" => "Общая настройка",
     "STATUS_MAIN"    => "Основная настройка",
-    "STATUS_CUSTOM"  => "Пользовательская настройка"
+    "STATUS_CUSTOM"  => "Пользовательская настройка",
+    "Are you sure?"  => "Вы уверены?",
 ];

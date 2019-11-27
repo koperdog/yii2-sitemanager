@@ -19,6 +19,7 @@
 namespace koperdog\yii2sitemanager\components;
 
 use koperdog\yii2sitemanager\readModels\DomainReadRepository;
+use koperdog\yii2sitemanager\useCases\DomainService;
 
 /**
  * Description of Domain

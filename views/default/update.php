@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= $form->field($model, 'value')->textarea(['placeholder' => \Yii::t('sitemanager', 'Default value')]) ?>
         
             <div class="form-group">
-                <?= Html::submitButton(Yii::t('sitemanager', 'Submit'), ['class' => 'btn btn-primary']) ?>
+                <?= Html::submitButton(Yii::t('sitemanager', 'Save'), ['class' => 'btn btn-success']) ?>
             </div>
         <?php ActiveForm::end(); ?>
 

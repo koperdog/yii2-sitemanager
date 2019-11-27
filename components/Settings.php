@@ -194,7 +194,12 @@ class Settings extends \yii\base\Component
         $data = $this->cache->get($key);
 
         if ($data === false) {
-            $data = $this->settingsRepository->getAllByStatus(Setting::STATUS['GENERAL']);
+            try{
+                $data = $this->settingsRepository->getAllByStatus(Setting::STATUS['GENERAL']);
+            }
+            catch(\DomainException $e){
+                $data = [];
+            }
             $this->cache->set($key, $data);
         }
         
@@ -212,8 +217,13 @@ class Settings extends \yii\base\Component
         $data = $this->cache->get($key);
 
         if ($data === false) {
-            $domain = $this->domains->getDefault();
-            $data = $this->settingsRepository->getAllByDomain($domain['id']);
+            try{
+                $domain = $this->domains->getDefault();
+                $data = $this->settingsRepository->getAllByDomain($domain['id']);
+            }
+            catch(\DomainException $e){
+                $data = [];
+            }
             $this->cache->set($key, $data);
         }
         
@@ -252,12 +262,17 @@ class Settings extends \yii\base\Component
         $data = $this->cache->get($key);
         
         if($data === false){
-            $data = $this->settingsRepository->getByDomain($name, $this->domains->getDomain());
-            if(!$data){
-                $data = $this->settingsRepository->getByDomain($name, $this->domains->getDefault());
+            try{
+                $data = $this->settingsRepository->getByDomain($name, $this->domains->getDomain());
                 if(!$data){
-                    $data = $this->settingsRepository->getByStatus($name, Setting::STATUS['GENERAL']);
+                    $data = $this->settingsRepository->getByDomain($name, $this->domains->getDefault());
+                    if(!$data){
+                        $data = $this->settingsRepository->getByStatus($name, Setting::STATUS['GENERAL']);
+                    }
                 }
+            }
+            catch(\DomainException $e){
+                $data = [];
             }
             
             $this->cache->set($key, $data);
@@ -271,7 +286,7 @@ class Settings extends \yii\base\Component
     private function loadToParams(array &$data): void
     {
         foreach($data as $key => $value){
-            \Yii::$app->params[$key] = $value;
+            \Yii::$app->params[$key] = $value['value'];
         }
         
         unset($data);
