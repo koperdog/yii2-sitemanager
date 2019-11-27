@@ -3,18 +3,23 @@
 
     $('.setting-delete').click(function(){
         if(confirm(i18n['confirm'])){
-            deleteSetting($(this).data('href'));
+            deleteSetting($(this));
         }
     });
     
-    function deleteSetting(href){
+    function deleteSetting(element){
         $.ajax({
-            url: href,
+            url: element.data('href'),
             method: 'GET',
             dataType: 'json',
             cache: false,
             success: function(data, textStatus, jqXHR){
-                console.log(data);
+                if(data.result){
+                    element.closest('.custom-setting-wr').remove();
+                }
+                else{
+                    console.error('Something went wrong');
+                }
             },
         });
     }

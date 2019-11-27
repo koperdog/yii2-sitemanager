@@ -37,6 +37,8 @@ class Domains extends \yii\base\Component
     
     private $service;
     
+    private $repository;
+    
     public function __construct(DomainService $service, DomainReadRepository $repository) {
         parent::__construct();
         

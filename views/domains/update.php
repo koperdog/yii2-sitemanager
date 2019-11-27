@@ -13,6 +13,10 @@ $this->title = Yii::t('sitemanager', 'Settings of Domain: {name}', [
 $this->params['breadcrumbs'][] = ['label' => Yii::t('sitemanager', 'Domains'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = Yii::t('sitemanager', 'Update');
+
+\koperdog\yii2sitemanager\AssetBundle::register($this);
+
+$this->registerJsVar('i18n', ['confirm' => \Yii::t('sitemanager', 'Are you sure?')]);
 ?>
 <div class="domain-update">
 
@@ -41,8 +45,8 @@ $this->params['breadcrumbs'][] = Yii::t('sitemanager', 'Update');
                 <div class="custom-setting-wr">
                     <?=$form->field($setting, "[$index]value", ['options' => ['class' => ($setting->required? 'required' : '')]])->textarea()->label($index);?>
                     <div class="controls_wr">
-                        <a href="<?= yii\helpers\Url::to(['default/update', 'id' => $setting->id]);?>"<i class="fa fa-gear"></i></a>
-                        <a href="<?= yii\helpers\Url::to(['default/delete', 'id' => $setting->id]);?>"<i class="fa fa-times"></i></a>
+                        <a href="<?= yii\helpers\Url::to(['default/update', 'id' => $setting->id]);?>"><i class="fa fa-gear"></i></a>
+                        <a data-href="<?= yii\helpers\Url::to(['default/delete', 'id' => $setting->id]);?>" class="setting-delete"><i class="fa fa-times"></i></a>
                     </div>
                 </div>
                 <?php endif;?>

@@ -84,8 +84,8 @@ class DefaultController extends \yii\web\Controller
         $model = $this->findSetting($id);
         
         if(\Yii::$app->request->isAjax){
-            $success = $this->service->delete($id);
-            return $success;
+            $result = $this->service->delete($id);
+            return ['result' => $result];
         }
         
         throw new \yii\web\ForbiddenHttpException("not ajax");
