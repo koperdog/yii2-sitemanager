@@ -94,14 +94,14 @@ go to /manager/languages
 also, if you want use standart CRUD, you can add to Url rule config:
 
 ```php
-CRUD settings from backend:
-go to /manager
-
-CRUD domains:
-go to /manager/domains
-
-CRUD languages:
-go to /manager/languages
+...
+'rules' => [
+    'manager' => 'manager/default/index',
+    'manager/<controller:domains|languages>/<action:\w+>' => 'manager/<controller>/<action>',
+    'manager/<controller:domains|languages>' => 'manager/<controller>/index',
+    'manager/<action:\w+>' => 'manager/default/<action>',
+],
+...
 ```
   
 </details>
