@@ -2,6 +2,8 @@ Settings Module
 ===============
 Settings for multilanguage, multidomain site
 
+![Packagist](https://img.shields.io/packagist/dt/koperdog/yii2-sitemanager) ![Packagist Version](https://img.shields.io/packagist/v/koperdog/yii2-sitemanager)
+
 Installation
 ------------
 
