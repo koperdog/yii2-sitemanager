@@ -5,15 +5,13 @@ namespace koperdog\yii2sitemanager\models;
 use Yii;
 
 /**
- * This is the model class for table "language".
+ * This is the model class for table "{{%language}}".
  *
  * @property int $id
  * @property string $code
  * @property string $code_local
  * @property string $name
  * @property int $status
- *
- * @property Setting[] $settings
  */
 class Language extends \yii\db\ActiveRecord
 {
@@ -22,7 +20,7 @@ class Language extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'language';
+        return '{{%language}}';
     }
 
     /**
@@ -52,13 +50,5 @@ class Language extends \yii\db\ActiveRecord
             'name' => Yii::t('sitemanager', 'Name'),
             'status' => Yii::t('sitemanager', 'Status'),
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSettings()
-    {
-        return $this->hasMany(Setting::className(), ['lang_id' => 'id']);
     }
 }

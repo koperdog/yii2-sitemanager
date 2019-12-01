@@ -3,26 +3,25 @@
 namespace koperdog\yii2sitemanager\controllers;
 
 use Yii;
-use yii\data\ActiveDataProvider;
+use koperdog\yii2sitemanager\models\Domain;
+use koperdog\yii2sitemanager\models\DomainSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
-use koperdog\yii2sitemanager\useCases\DomainService;
-use koperdog\yii2sitemanager\repositories\DomainRepository;
-use koperdog\yii2sitemanager\repositories\SettingRepository;
-use koperdog\yii2sitemanager\models\Domain;
+use koperdog\yii2sitemanager\repositories\{
+    SettingRepository,
+    DomainRepository
+};
 
 /**
- * DomainController implements the CRUD actions for Domain model.
+ * DomainsController implements the CRUD actions for Domain model.
  */
 class DomainsController extends Controller
 {
-    
     private $service;
-    
-    private $domain;
+    private $repository;
     private $settings;
+    
     /**
      * {@inheritdoc}
      */
@@ -42,15 +41,15 @@ class DomainsController extends Controller
     (
         $id, 
         $module, 
-        DomainService $service,
+        //DomainService $service,
         DomainRepository $domain,
         SettingRepository $settings,
         $config = []
     ) 
     {
         parent::__construct($id, $module, $config);
-        $this->service  = $service;
-        $this->domain   = $domain; 
+//        $this->service  = $service;
+        $this->repository   = $domain; 
         $this->settings = $settings;
     }
 
@@ -60,11 +59,11 @@ class DomainsController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => $this->domain->find()
-        ]);
+        $searchModel = new DomainSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -77,11 +76,8 @@ class DomainsController extends Controller
      */
     public function actionView($id)
     {
-        $settings = $this->settings->getAllByDomain($id, $status);
-        
         return $this->render('view', [
-            'model'    => $this->findModel($id),
-            'settings' => $settings
+            'model' => $this->findModel($id),
         ]);
     }
 
@@ -92,20 +88,14 @@ class DomainsController extends Controller
      */
     public function actionCreate()
     {
-        $form = new \koperdog\yii2sitemanager\models\Domain();
+        $model = new Domain();
 
-        if ($form->load(Yii::$app->request->post())){
-            if($this->service->createDomain(Yii::$app->request->post('Domain'))){
-                \Yii::$app->session->setFlash('success', \Yii::t('sitemanager', 'Success save'));
-                return $this->redirect(['manager/domains']);
-            }
-            else{
-                \Yii::$app->session->setFlash('error', \Yii::t('sitemanager/error', 'Error create'));
-            }
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
-            'model' => $form,
+            'model' => $model,
         ]);
     }
 
@@ -118,14 +108,13 @@ class DomainsController extends Controller
      */
     public function actionUpdate($id)
     {
-        $form     = $this->findModel($id);
-        $settings = $this->settings->getAllByDomain($id);
+        $model    = $this->findModel($id);
+        $settings = $this->findDomainSettings($id);
 
-        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
-            
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if(
-                $this->service->updateDomain($form->id, \Yii::$app->request->post()) &&
-                $this->settings->saveAll($settings, \Yii::$app->request->post())
+                $this->service->updateDomain($model->id, \Yii::$app->request->post()) &&
+                $this->settings->saveMultiple($settings, \Yii::$app->request->post())
             ){
                 \Yii::$app->session->setFlash('success', \Yii::t('sitemanager', 'Success save'));
             }
@@ -134,16 +123,11 @@ class DomainsController extends Controller
             }
             return $this->refresh();
         }
-
+        
         return $this->render('update', [
-            'model'    => $form,
+            'model'    => $model,
             'settings' => $settings
         ]);
-    }
-    
-    public function actionTest()
-    {
-        return \koperdog\yii2sitemanager\widgets\SettingsForm::widget();
     }
 
     /**
@@ -155,16 +139,20 @@ class DomainsController extends Controller
      */
     public function actionDelete($id)
     {
-        $model = $this->findModel($id);
-        
-        if($this->service->deleteDomain($model)){
-            \Yii::$app->session->setFlash('success', \Yii::t('sitemanager', 'Success delete'));
-        }
-        else{
-            \Yii::$app->session->setFlash('error', \Yii::t('sitemanager/error', 'Error delete'));
-        }
+        $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+    
+    private function findDomainSettings($id)
+    {
+        try{
+            $models = $this->settings->getAllByDomain($id);
+        } catch(\DomainException $e){
+            throw new NotFoundHttpException(Yii::t('sitemanager', 'The requested page does not exist.'));
+        }
+        
+        return $models;
     }
 
     /**
@@ -176,10 +164,12 @@ class DomainsController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Domain::findOne($id)) !== null) {
-            return $model;
+        try{
+            $model = $this->repository->get($id);
+        } catch(\DomainException $e){
+            throw new NotFoundHttpException(Yii::t('sitemanager', 'The requested page does not exist.'));
         }
-
-        throw new NotFoundHttpException(Yii::t('sitemanager/error', 'The requested page does not exist.'));
+        
+        return $model;
     }
 }

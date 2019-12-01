@@ -31,77 +31,30 @@ use koperdog\yii2sitemanager\models\Domain;
 class DomainRepository {
     
     /**
-     * Checks if exists Domain by name
+     * Checks if exists Setting by name
      * 
-     * @param string $domain
+     * @param string $name
      * @return bool
      */
-    public function existByDomain(string $domain): bool
+    public function existSetting(string $name): bool
     {
-        return Domain::find()->where(['domain' => $domain])->exists();
+        return Domain::find()->where(['name' => $name])->exists();
     }
     
-    /**
-     * Gets all domains
-     * 
-     * @return array|null
-     * @throws \DomainException
-     */
-    public function getAll(): ?array
-    {
-        if(!$models = Domain::find()->all()){
-            throw new \DomainException();
-        }
-        return $models;
-    }
-    
-    /**
-     * Gets domain by id
-     * 
-     * @param int $id
-     * @return Domain
-     * @throws \DomainException
-     */
     public function get(int $id): Domain
     {
         if(!$model = Domain::findOne($id)){
-            throw new \DomainException();
+            throw new \DomainException("The domain with id: {$id} does not exist");
         }
         
         return $model;
     }
     
     /**
-     * Gets main domain
+     * Saves setting
      * 
-     * @return Domain
+     * @return array|null
      * @throws \DomainException
-     */
-    public function getDefault(): Domain
-    {
-        if(!$model = Domain::findOne(['is_default' => Domain::MAIN])){
-            throw new \DomainException();
-        }
-        
-        return $model;
-    }
-    
-    /**
-     * Looking for a domain
-     * 
-     * @return \yii\db\ActiveQueryInterface|null
-     */
-    public function find(): ?\yii\db\ActiveQueryInterface
-    {
-        return Domain::find();
-    }
-    
-    /**
-     * Saves domain
-     * 
-     * @param Domain $setting
-     * @return bool
-     * @throws \RuntimeException
      */
     public function save(Domain $setting): bool
     {
@@ -111,32 +64,10 @@ class DomainRepository {
         return true;
     }
     
-    /**
-     * Removes domain
-     * 
-     * @param Domain $setting
-     * @return bool
-     * @throws \RuntimeException
-     */
-    public function remove(Domain $setting): bool
+    public function getDefault(): Domain
     {
-        if(!$setting->delete()){
-            throw new \RuntimeException();
-        }
-        return true;
-    }
-    
-    /**
-     * Gets domain by name
-     * 
-     * @param string $domain
-     * @return Domain
-     * @throws \DomainException
-     */
-    public function getByDomain(string $domain): Domain
-    {
-        if(!$model = Domain::find()->where(['domain' => $domain])->one()){
-            throw new \DomainException();
+        if(!$model = Domain::find()->where(['is_default' => true])->one()){
+            throw new \DomainException("The default domain does not exist!");
         }
         
         return $model;

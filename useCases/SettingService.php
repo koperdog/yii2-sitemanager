@@ -10,10 +10,13 @@ namespace koperdog\yii2sitemanager\useCases;
 
 use koperdog\yii2sitemanager\repositories\{
     SettingRepository,
-    DomainRepository,
-    LanguageRepository
+    DomainRepository
 };
-use \koperdog\yii2sitemanager\models\Setting;
+use \koperdog\yii2sitemanager\models\{
+    Setting,
+    SettingAssign,
+    forms\SettingForm
+};
 
 /**
  * Description of SettingService
@@ -23,18 +26,31 @@ use \koperdog\yii2sitemanager\models\Setting;
 class SettingService {
     private $setting;
     private $domain;
-    private $language;
     
-    public function __construct(SettingRepository $setting, DomainRepository $domain, LanguageRepository $language)
+    public function __construct(SettingRepository $setting, DomainRepository $domain)
     {
-        $this->setting  = $setting;
-        $this->domain   = $domain;
-        $this->language = $language;
+        $this->setting = $setting;
+        $this->domain  = $domain;
+    }
+    
+    public function create(SettingForm $form, $status = Setting::STATUS['CUSTOM']): bool
+    {
+        $domain = $this->domain->getDefault();
+        return $this->setting->create($form, $domain->id, $status);
     }
     
     public function saveMultiple(array $settings, array $data): bool
     {
-        return $this->setting->saveAll($settings, $data);
+        $transaction = \Yii::$app->db->beginTransaction();
+        try{
+            $success = $this->setting->saveAll($settings, $data);
+            $transaction->commit();
+        }catch(\RuntimeException $e){
+            $transaction->rollBack();
+            return false;
+        }
+        
+        return $success;
     }
     
     public function save(Setting $setting): bool
@@ -49,76 +65,5 @@ class SettingService {
         }
         
         return true;
-    }
-    
-    public function copyAllToDomain(int $domain_id): void
-    {
-        $main_domain = $this->domain->getDefault();
-        $settings    = $this->setting->getAllByDomain($main_domain->id);
-        
-        foreach($settings as $setting){
-            $new = new Setting();
-            $new->attributes = $setting->attributes;
-            $new->domain_id  = $domain_id;
-            
-            $this->setting->save($new);
-        }
-    }
-    
-    public function delete(int $id): bool
-    {
-        $transaction = \Yii::$app->db->beginTransaction();
-        try{
-            $setting = $this->setting->get($id);            
-            $this->setting->deleteAllByName($setting->name);
-            $transaction->commit();
-        } catch(\Throwable $e) {
-            $transaction->rollBack();
-            return false;
-        }
-        
-        return true;
-    }
-    
-    public function deleteAllByDomain(int $domain_id): ?bool
-    {
-        return $this->setting->removeAllByDomain($domain_id);
-    }
-    
-    public function createSetting(Setting $form): bool
-    {
-        if($this->setting->existSetting($form->name)){
-            throw new \DomainException("Setting already exists");
-        }
-        
-        $setting = new Setting([
-            'name'       => $form->name,
-            'value'      => $form->value,
-            'required'   => $form->required,
-            'status'     => $form->status
-        ]);
-        
-        $transaction = \Yii::$app->db->beginTransaction();
-        try {
-            $this->copySettingToAllDomains($setting);
-            $transaction->commit();
-        } catch(\Throwable $e) {
-            $transaction->rollBack();
-            return false;
-        }
-        
-        return true;
-    }
-    
-    private function copySettingToAllDomains(Setting $setting): void
-    {
-        $domains = $this->domain->getAll();
-        foreach($domains as $domain){
-            $copy = new Setting();
-            $copy->attributes = $setting->attributes;
-            $copy->domain_id  = $domain->id;
-            
-            $this->setting->save($copy);
-        }
     }
 }

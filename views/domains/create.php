@@ -1,10 +1,9 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Domain */
+/* @var $model koperdog\yii2sitemanager\models\Domain */
 
 $this->title = Yii::t('sitemanager', 'Create Domain');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('sitemanager', 'Domains'), 'url' => ['index']];
@@ -14,17 +13,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <div class="domain-form">
+    <?= $this->render('_form', [
+        'model' => $model,
+    ]) ?>
 
-        <?php $form = ActiveForm::begin(); ?>
-
-        <?= $form->field($model, 'domain')->textInput(['maxlength' => true]) ?>
-
-        <div class="form-group">
-            <?= Html::submitButton(Yii::t('sitemanager', 'Save'), ['class' => 'btn btn-success']) ?>
-        </div>
-
-        <?php ActiveForm::end(); ?>
-
-    </div>
 </div>
