@@ -8,9 +8,14 @@ use koperdog\yii2sitemanager\models\DomainSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+
+use koperdog\yii2sitemanager\useCases\{
+    DomainService, 
+    SettingService
+};
 use koperdog\yii2sitemanager\repositories\{
-    SettingRepository,
-    DomainRepository
+    DomainRepository,
+    SettingRepository
 };
 
 /**
@@ -18,9 +23,10 @@ use koperdog\yii2sitemanager\repositories\{
  */
 class DomainsController extends Controller
 {
-    private $service;
-    private $repository;
-    private $settings;
+    private $domainService;
+    private $domainRepository;
+    private $settingService;
+    private $settingRepository;
     
     /**
      * {@inheritdoc}
@@ -41,16 +47,18 @@ class DomainsController extends Controller
     (
         $id, 
         $module, 
-        //DomainService $service,
-        DomainRepository $domain,
-        SettingRepository $settings,
+        DomainService $domainService,
+        DomainRepository $domainRepository,
+        SettingService $settingService,
+        SettingRepository $settingRepository,
         $config = []
     ) 
     {
         parent::__construct($id, $module, $config);
-//        $this->service  = $service;
-        $this->repository   = $domain; 
-        $this->settings = $settings;
+        $this->domainService           = $domainService;
+        $this->domainRepository        = $domainRepository; 
+        $this->settingService    = $settingService;
+        $this->settingRepository = $settingRepository;
     }
 
     /**
@@ -113,15 +121,15 @@ class DomainsController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if(
-                $this->service->updateDomain($model->id, \Yii::$app->request->post()) &&
-                $this->settings->saveMultiple($settings, \Yii::$app->request->post())
+                $this->domainService->updateDomain($model->id, \Yii::$app->request->post()) &&
+                $this->settingService->saveMultiple($settings, \Yii::$app->request->post())
             ){
                 \Yii::$app->session->setFlash('success', \Yii::t('sitemanager', 'Success save'));
+                return $this->refresh();
             }
             else{
                 \Yii::$app->session->setFlash('error', \Yii::t('sitemanager/error', 'Error save'));
             }
-            return $this->refresh();
         }
         
         return $this->render('update', [
@@ -147,7 +155,7 @@ class DomainsController extends Controller
     private function findDomainSettings($id)
     {
         try{
-            $models = $this->settings->getAllByDomain($id);
+            $models = $this->settingRepository->getAllByDomain($id);
         } catch(\DomainException $e){
             throw new NotFoundHttpException(Yii::t('sitemanager', 'The requested page does not exist.'));
         }
@@ -165,7 +173,7 @@ class DomainsController extends Controller
     protected function findModel($id)
     {
         try{
-            $model = $this->repository->get($id);
+            $model = $this->domainRepository->get($id);
         } catch(\DomainException $e){
             throw new NotFoundHttpException(Yii::t('sitemanager', 'The requested page does not exist.'));
         }
