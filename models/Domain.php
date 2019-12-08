@@ -28,7 +28,8 @@ class Domain extends \yii\db\ActiveRecord
     {
         return [
             [['domain', 'is_default'], 'required'],
-            [['is_default'], 'integer'],
+            [['is_default'], 'boolean'],
+            [['is_default'], 'default', 'value' => false],
             [['domain'], 'string', 'max' => 255],
             [['domain'], 'unique'],
         ];
@@ -44,5 +45,13 @@ class Domain extends \yii\db\ActiveRecord
             'domain' => Yii::t('sitemanager', 'Domain'),
             'is_default' => Yii::t('sitemanager', 'Is Default'),
         ];
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSettings()
+    {
+        return $this->hasMany(SettingAssign::className(), ['domain_id' => 'id']);
     }
 }

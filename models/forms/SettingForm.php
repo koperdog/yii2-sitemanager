@@ -1,10 +1,11 @@
 <?php
+
 namespace koperdog\yii2sitemanager\models\forms;
 
 use yii\base\Model;
 
 /**
- * Signup form
+ * Setting create form
  */
 class SettingForm extends Model
 {    

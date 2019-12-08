@@ -27,6 +27,7 @@ class Module extends \yii\base\Module
             
             \Yii::$app->i18n->translations[self::MODULE_NAME . '*'] = [
                 'class'    => \yii\i18n\PhpMessageSource::class,
+                'sourceLanguage' => 'en-US',
                 'basePath' => __DIR__ . '/messages',
                 'fileMap'  => [
                     self::MODULE_NAME . "/error" => "error.php", 

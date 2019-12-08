@@ -8,69 +8,67 @@
 
 namespace koperdog\yii2sitemanager\useCases;
 
-use koperdog\yii2sitemanager\repositories\{
-    SettingRepository,
-    DomainRepository
+use koperdog\yii2sitemanager\repositories\LanguageRepository;
+use \koperdog\yii2sitemanager\models\{
+    Language, 
+    forms\LanguageForm
 };
-use \koperdog\yii2sitemanager\models\Domain;
-use \koperdog\yii2sitemanager\models\forms\DomainForm;
 
 /**
  * Description of SettingService
  *
  * @author Koperdog <koperdog@github.com>
  */
-class DomainService {
-    private $settingRepository;
-    private $domainRepository;
+class LanguageService {
+    private $languageRepository;
     
-    public function __construct(DomainRepository $domain, SettingRepository $setting)
+    public function __construct(LanguageRepository $language)
     {
-        $this->settingRepository = $setting;
-        $this->domainRepository  = $domain;
+        $this->languageRepository = $language;
     }
     
-    public function updateDomain(int $id, array $data): bool
+    public function update(Language $model): bool
     {
-        $domain = $this->domainRepository->getById($id);
-        $domain->load($data);
-        
         $transaction = \Yii::$app->db->beginTransaction();
         try {
-            $this->domainRepository->save($domain);
+            $this->languageRepository->save($model);
             $transaction->commit();
         } catch(\Throwable $e) {
             $transaction->rollBack();
             return false;
         }
+        
         return true;
     }
     
-    public function create(DomainForm $domain): ?Domain
+    public function create(LanguageForm $form): bool
     {
-        $newDomain = new Domain([
-            'domain'     => $domain->domain,
-            'is_default' => $domain->is_default
+        $language = new Language([
+            'name'       => $form->name,
+            'code'       => $form->code,
+            'code_local' => $form->code_local,
+            'status'     => $form->status,
+            'is_default' => $form->is_default,
         ]);
         
         $transaction = \Yii::$app->db->beginTransaction();
         try {
-            $this->domainRepository->save($newDomain);
+            $this->languageRepository->save($language);
             $transaction->commit();
         } catch(\Throwable $e) {
             $transaction->rollBack();
-            return null;
+            return false;
         }
         
-        return $newDomain;
+        return true;
     }
     
-    public function delete(Domain $domain): bool
+    public function delete(Language $model): bool
     {
         $transaction = \Yii::$app->db->beginTransaction();
         try {
-            $domain->unlinkAll('settings', true);
-            $this->domainRepository->delete($domain);
+            $model->unlinkAll('settings', true);
+            $this->languageRepository->delete($model);
             $transaction->commit();
         } catch(\Throwable $e) {
             $transaction->rollBack();
@@ -79,16 +77,16 @@ class DomainService {
         return true;
     }
     
-    public function makeDefault(Domain $model): bool
+    public function makeDefault(Language $model): bool
     {
         $transaction = \Yii::$app->db->beginTransaction();
         try {
-            $default = $this->domainRepository->getDefault();
+            $default = $this->languageRepository->getDefault();
             $default->is_default = false;
             
             $model->is_default   = true;
-            $this->domainRepository->save($default);
-            $this->domainRepository->save($model);
+            $this->languageRepository->save($default);
+            $this->languageRepository->save($model);
             $transaction->commit();
         } catch(\Throwable $e) {
             $transaction->rollBack();

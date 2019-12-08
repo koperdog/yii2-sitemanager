@@ -32,14 +32,14 @@ $this->registerJsVar('i18n', ['confirm' => \Yii::t('sitemanager', 'Are you sure?
             <div class="panel-heading"><?=\Yii::t('sitemanager', 'Settings');?></div>
             <div class="panel-body" id="settings_wr">
                 
-                <?=$form->field($settings['disconnected']->assign, "[disconnected]value")
+                <?=$form->field($settings['disconnected'], "[disconnected]value")
                     ->checkbox(['label' => false])
                     ->label("Disconnected");?>
 
-                <?=$form->field($settings['site_name']->assign, "[site_name]value")
+                <?=$form->field($settings['site_name'], "[site_name]value")
                     ->label("Site name");?>
 
-                <?=$form->field($settings['main_page']->assign, "[main_page]value")
+                <?=$form->field($settings['main_page'], "[main_page]value")
                     ->dropDownList(["Главная страница", "Тестовая страница"])
                     ->label("Main page");?>
                 
@@ -52,13 +52,17 @@ $this->registerJsVar('i18n', ['confirm' => \Yii::t('sitemanager', 'Are you sure?
             <div class="panel-body" id="settings_wr">
                 <?php if(!empty($settings)):?>
                 <?php foreach($settings as $index => $setting):?>
-                <?php if($setting->status == \koperdog\yii2sitemanager\models\Setting::STATUS['CUSTOM']):?>
+                <?php if($setting->setting->status == \koperdog\yii2sitemanager\models\Setting::STATUS['CUSTOM']):?>
                 
                 <div class="custom-setting-wr">
-                    <?=$form->field($setting->assign, "[$index]value", ['options' => ['class' => ($setting->required? 'required' : '')]])->textarea()->label($index);?>
+                    <?=$form->field($setting, "[$index]value", ['options' => ['class' => ($setting->setting->required? 'required' : '')]])->textarea()->label($index);?>
                     <div class="controls_wr">
-                        <a href="<?= yii\helpers\Url::to(['default/update', 'id' => $setting->id]);?>"><i class="fa fa-gear"></i></a>
-                        <a data-href="<?= yii\helpers\Url::to(['default/delete', 'id' => $setting->id]);?>" class="setting-delete"><i class="fa fa-times"></i></a>
+                        <a href="<?= yii\helpers\Url::to(['default/update', 'id' => $setting->setting->id]);?>">
+                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                        </a>
+                        <a data-href="<?= yii\helpers\Url::to(['default/delete', 'id' => $setting->setting->id]);?>" class="setting-delete">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </a>
                     </div>
                 </div>
                 <?php endif;?>

@@ -10,7 +10,7 @@ use Yii;
  * @property int $id
  * @property int $setting_id
  * @property int|null $domain_id
- * @property int|null $lang_id
+ * @property int|null $language_id
  * @property int $value
  */
 class SettingAssign extends \yii\db\ActiveRecord
@@ -31,7 +31,7 @@ class SettingAssign extends \yii\db\ActiveRecord
     {
         return [
             [['setting_id'], 'required'],
-            [['setting_id', 'domain_id', 'lang_id'], 'integer'],
+            [['setting_id', 'domain_id', 'language_id'], 'integer'],
             [['value'], 'safe'],
             [['required'], 'checkRequired', 'when' => function($model){ return (bool)$model->required;}],
         ];
@@ -46,7 +46,7 @@ class SettingAssign extends \yii\db\ActiveRecord
             'id' => Yii::t('sitemanager', 'ID'),
             'setting_id' => Yii::t('sitemanager', 'Setting ID'),
             'domain_id' => Yii::t('sitemanager', 'Domain ID'),
-            'lang_id' => Yii::t('sitemanager', 'Lang ID'),
+            'language_id' => Yii::t('sitemanager', 'Lang ID'),
             'value' => Yii::t('sitemanager', 'Value'),
         ];
     }

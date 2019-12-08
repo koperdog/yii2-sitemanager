@@ -32,9 +32,9 @@ class SettingQuery extends \yii\db\ActiveQuery
         return parent::one($db);
     }
     
-    public function findByStatus($status = null, $domain_id = null, $lang_id = null)
-    {
-        return $this->hasOne(SettingAssign::className(), ['setting_id' => 'id'])
-                ->andFilterWhere(['domain_id' => $domain_id]);
-    }
+//    public function findByStatus($status = null, $domain_id = null, $language_id = null)
+//    {
+//        return $this->hasOne(SettingAssign::className(), ['setting_id' => 'id'])
+//                ->andFilterWhere(['domain_id' => $domain_id]);
+//    }
 }

@@ -18,6 +18,7 @@
 
 namespace koperdog\yii2sitemanager\repositories;
 
+use \yii\db\ActiveRecord;
 use koperdog\yii2sitemanager\models\
 {
     Setting,
@@ -33,7 +34,8 @@ use koperdog\yii2sitemanager\models\
  * @author Koperdog <koperdog@github.com>
  * @version 1.0
  */
-class SettingRepository {
+class SettingRepository 
+{
     
     const RELATE_NAME = 'setting';
     
@@ -48,38 +50,52 @@ class SettingRepository {
         return Setting::find()->where(['name' => $name])->exists();
     }
     
-    public function getAllByStatus
-    (
-        int $status    = Setting::STATUS['GENERAL'],
-        int $domain_id = null,
-        int $lang_id   = null
-    )
+    public function getById(int $id): Setting
     {
-        $model =  Setting::find()
-                ->joinWith('assign assign')
-                ->where(['status' => $status])
-                ->andFilterWhere(['assign.domain_id' => $domain_id, 'assign.lang_id' => $lang_id])
-                ->indexBy('name')
-                ->all();
-        
-        if(!$model){
-            throw new DomainException("Setting with status: {$status} does not exist");
+        if(!$model = Setting::findOne($id)){
+            throw new DomainException();
         }
         
         return $model;
     }
     
-    public function getAllByDomain(int $domain_id, int $lang_id = null)
+    public function getAllByStatus
+    (
+        int $status    = Setting::STATUS['GENERAL'],
+        int $domain_id = null,
+        int $language_id   = null
+    )
     {
-        $model =  Setting::find()
-                ->joinWith('assign assign')
-                ->where(['assign.domain_id' => $domain_id])
-                ->andFilterWhere(['assign.lang_id' => $lang_id])
-                ->indexBy('name')
+        $defaultDomain = DomainRepository::getDefaultId();
+        
+        $model = SettingAssign::find()
+                ->joinWith('setting')
+                ->where(['status' => $status])
+                ->andWhere(['or', ['domain_id' => $domain_id], ['domain_id' => $defaultDomain], ['domain_id' => null]])
+                ->andWhere(['or', ['language_id' => $language_id], ['language_id' => null]])
+                ->indexBy('setting.name')
                 ->all();
         
         if(!$model){
-            throw new DomainException("Setting for domain id: {$domain_id} does not exist");
+            throw new \DomainException("Setting with status: {$status} does not exist");
+        }
+        
+        return $model;
+    }
+    
+    public function getAllByDomain(int $domain_id, int $language_id = null)
+    {
+        $defaultDomain = DomainRepository::getDefaultId();
+        
+        $model = SettingAssign::find()
+                ->joinWith('setting')
+                ->andWhere(['or', ['domain_id' => $domain_id], ['domain_id' => $defaultDomain], ['domain_id' => null]])
+                ->andWhere(['or', ['language_id' => $language_id], ['language_id' => null]])
+                ->indexBy('setting.name')
+                ->all();
+        
+        if(!$model){
+            throw new \DomainException("Setting for domain id: {$domain_id} does not exist");
         }
         
         return $model;
@@ -88,32 +104,50 @@ class SettingRepository {
     /**
      * Saves setting
      * 
-     * @return array|null
+     * @return bool
      * @throws \DomainException
      */
-    public function save(\yii\db\ActiveRecord $setting): bool
+    public function save(ActiveRecord $setting): bool
     {
         if(!$setting->save()){
             throw new \RuntimeException();
         }
+        
+        return true;
+    }
+    
+    public function delete(ActiveRecord $setting): bool
+    {
+        if(!$setting->delete()){
+            throw new RuntimeException();
+        }
+        
         return true;
     }
     
     /**
      * Saves all settings
      * 
-     * @return array|null
-     * @throws \DomainException
+     * @param array $settings
+     * @param array $data
+     * @return bool
      */
-    public function saveAll(array $settings, array $data): bool
+    public function saveAll(array $settings, array $data, $domain_id = null, $language_id = null): bool
     {
         foreach($settings as $index => $setting){
             
             $load = $data['SettingAssign'][$index];
-            $load['required'] = $setting->required;
-            
-            if($setting->assign->load($load, '') && $setting->assign->validate()){
-                $this->save($setting->assign);
+            $load['required'] = $setting->setting->required;
+                        
+            if($setting->load($load, '') && $setting->validate()){
+                if(($setting->domain_id != $domain_id || $setting->language_id != $language_id)
+                    && $setting->getDirtyAttributes())
+                {
+                    $this->copySetting($setting, $domain_id, $language_id);
+                }
+                else{
+                    $this->save($setting);
+                }
             }
             else{
                 return false;
@@ -123,7 +157,18 @@ class SettingRepository {
         return true;
     }
     
-    public function create(SettingForm $form, int $domain_id, $status = Setting::STATUS['CUSTOM']): bool
+    private function copySetting(ActiveRecord $setting, $domain_id, $language_id)
+    {
+        $newSetting = new SettingAssign();
+        $newSetting->attributes = $setting->attributes;
+        
+        $newSetting->domain_id   = $domain_id;
+        $newSetting->language_id = $language_id;
+        
+        return $this->save($newSetting);
+    }
+    
+    public function create(SettingForm $form, $status = Setting::STATUS['CUSTOM']): bool
     {
         $setting = new Setting([
             'name'     => $form->name,
@@ -134,7 +179,6 @@ class SettingRepository {
         
         $settingAssign = new SettingAssign([
             'value'     => $form->value,
-            'domain_id' => $domain_id
         ]);
         
         $transaction = \Yii::$app->db->beginTransaction();

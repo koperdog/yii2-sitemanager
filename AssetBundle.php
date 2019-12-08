@@ -28,7 +28,7 @@ class AssetBundle extends \yii\web\AssetBundle
      * @inherit
      */
     public $js = [
-        'js/script.js',
+        'js/manager.js',
     ];
     
     /**

@@ -18,27 +18,26 @@
 
 namespace koperdog\yii2sitemanager\repositories;
 
-use koperdog\yii2sitemanager\models\{
-    Domain,
-    DomainSearch
+use \koperdog\yii2sitemanager\models\{
+    Language, 
+    LanguageSearch
 };
 
 /**
- * Repository for Domain model
+ * Repository for Language model
  * 
- * Repository for Domain model, implements repository design
+ * Repository for Language model, implements repository design
  *
  * @author Koperdog <koperdog@github.com>
  * @version 1.0
  */
-class DomainRepository 
+class LanguageRepository 
 {
-    private static $default;
-    
-    public function search(DomainSearch $searchModel, array $query = [])
+    public function search(LanguageSearch $searchModel, array $query = [])
     {        
         return $searchModel->search($query);
     }
+    
     /**
      * Checks if exists Setting by name
      * 
@@ -47,13 +46,13 @@ class DomainRepository
      */
     public function existSetting(string $name): bool
     {
-        return Domain::find()->where(['name' => $name])->exists();
+        return Language::find()->where(['name' => $name])->exists();
     }
     
-    public function getById(int $id): Domain
+    public function getById(int $id): Language
     {
-        if(!$model = Domain::findOne($id)){
-            throw new \DomainException("The domain with id: {$id} does not exist");
+        if(!$model = Language::findOne($id)){
+            throw new \DomainException("The language with id: {$id} does not exist");
         }
         
         return $model;
@@ -65,27 +64,27 @@ class DomainRepository
      * @return array|null
      * @throws \DomainException
      */
-    public function save(Domain $domain): bool
+    public function save(Language $language): bool
     {
-        if(!$domain->save()){
+        if(!$language->save()){
             throw new \RuntimeException();
         }
         return true;
     }
     
-    public function delete(Domain $domain): bool
+    public function delete(Language $language): bool
     {
-        if(!$domain->delete()){
+        if(!$language->delete()){
             throw new RuntimeException();
         }
         
         return true;
     }
     
-    public function getDefault(): Domain
+    public function getDefault(): Language
     {
-        if(!$model = Domain::find()->where(['is_default' => true])->one()){
-            throw new \DomainException("The default domain does not exist!");
+        if(!$model = Language::find()->where(['is_default' => true])->one()){
+            throw new \DomainException("The default language does not exist!");
         }
         
         return $model;
@@ -93,10 +92,12 @@ class DomainRepository
     
     public static function getDefaultId(): ?int
     {
-        if(!self::$default){
-            self::$default = Domain::find()->select('id')->where(['is_default' => true])->one();
+        $model = Language::find()->select('id')->where(['is_default' => true])->one();
+        
+        if(!$model){
+            return null;
         }
         
-        return self::$default['id'];
+        return $model->id;
     }
 }

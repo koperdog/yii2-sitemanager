@@ -4,31 +4,34 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 /* @var $this yii\web\View */
-/* @var $searchModel koperdog\yii2sitemanager\models\DomainSearch */
+/* @var $searchModel koperdog\yii2sitemanager\models\LanguageSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('sitemanager', 'Domains');
+$this->title = Yii::t('sitemanager', 'Languages');
 $this->params['breadcrumbs'][] = $this->title;
 
 \koperdog\yii2sitemanager\AssetBundle::register($this);
 ?>
-<div class="domain-index">
+<div class="language-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('sitemanager', 'Create Domain'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('sitemanager', 'Create Language'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?php// Pjax::begin(); ?>
+    <?php Pjax::begin(); ?>
+    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            'id',
-            'domain',
+            'name',
+            'code',
+            'code_local',
+            'status',
             [
                 'attribute' => 'is_default',
                 'label'     => 'Default',
@@ -51,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
-                'class' => 'yii\grid\ActionColumn',
+                'class'    => 'yii\grid\ActionColumn',
                 'header'    => 'Actions',
                 'template' => '{update} {delete}',
                 'visibleButtons' => [
@@ -64,6 +67,6 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
-    <?php// Pjax::end(); ?>
+    <?php Pjax::end(); ?>
 
 </div>

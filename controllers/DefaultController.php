@@ -16,8 +16,8 @@ use \koperdog\yii2sitemanager\useCases\SettingService;
  */
 class DefaultController extends Controller
 {
-    private $repository;
-    private $service;
+    private $settingRepository;
+    private $settingService;
     /**
      * {@inheritdoc}
      */
@@ -43,8 +43,8 @@ class DefaultController extends Controller
     ) 
     {
         parent::__construct($id, $module, $config);
-        $this->repository = $repository;
-        $this->service    = $service;
+        $this->settingRepository = $repository;
+        $this->settingService    = $service;
     }
 
     /**
@@ -56,7 +56,7 @@ class DefaultController extends Controller
         $settings = $this->findModels(Setting::STATUS['GENERAL']);
         
         if(\Yii::$app->request->post()){
-            if($this->service->saveMultiple($settings, \Yii::$app->request->post())){
+            if($this->settingService->saveMultiple($settings, \Yii::$app->request->post())){
                 \Yii::$app->session->setFlash('success', \Yii::t('sitemanager', 'Success save'));
             }
             else{
@@ -72,7 +72,7 @@ class DefaultController extends Controller
         $form = new \koperdog\yii2sitemanager\models\forms\SettingForm();
         
         if($form->load(\Yii::$app->request->post()) && $form->validate()){
-            if($this->service->create($form)){
+            if($this->settingService->create($form)){
                 \Yii::$app->session->setFlash('success', \Yii::t('sitemanager', 'Success save'));
                 $this->redirect(['/manager/domains/index']);
             }
@@ -84,10 +84,32 @@ class DefaultController extends Controller
         return $this->render('create', ['model' => $form]);
     }
     
-    private function findModels($status = Setting::STATUS['GENERAL'], $domain_id = null, $lang_id = null)
+    public function actionDelete($id)
+    {
+        if(!\Yii::$app->request->isAjax) throw new ForbidenHttpException();
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $model  = $this->findModel($id);
+        $result = $this->settingService->delete($model);
+        
+        return ['result' => $result];
+    }
+    
+    private function findModel(int $id)
     {
         try{
-            $models = $this->repository->getAllByStatus($status, $domain_id, $lang_id);
+            $model = $this->settingRepository->getById($id);
+        } catch(\DomainException $e){
+            throw new NotFoundHttpException(Yii::t('sitemanager', 'The requested page does not exist.'));
+        }
+        
+        return $model;
+    }
+    
+    private function findModels($status = Setting::STATUS['GENERAL'], $domain_id = null, $language_id = null)
+    {
+        try{
+            $models = $this->settingRepository->getAllByStatus($status, $domain_id, $language_id);
         } catch(\DomainException $e){
             throw new NotFoundHttpException(Yii::t('sitemanager', 'The requested page does not exist.'));
         }

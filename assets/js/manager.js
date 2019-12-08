@@ -10,7 +10,7 @@
     function deleteSetting(element){
         $.ajax({
             url: element.data('href'),
-            method: 'GET',
+            method: 'POST',
             dataType: 'json',
             cache: false,
             success: function(data, textStatus, jqXHR){
