@@ -22,7 +22,7 @@ use \yii\db\ActiveRecord;
 use koperdog\yii2sitemanager\models\
 {
     Setting,
-    SettingAssign,
+    SettingValue,
     forms\SettingForm
 };
 
@@ -68,7 +68,7 @@ class SettingRepository
     {
         $defaultDomain = DomainRepository::getDefaultId();
         
-        $model = SettingAssign::find()
+        $model = SettingValue::find()
                 ->joinWith('setting')
                 ->where(['status' => $status])
                 ->andWhere(['or', ['domain_id' => $domain_id], ['domain_id' => $defaultDomain], ['domain_id' => null]])
@@ -87,7 +87,7 @@ class SettingRepository
     {
         $defaultDomain = DomainRepository::getDefaultId();
         
-        $model = SettingAssign::find()
+        $model = SettingValue::find()
                 ->joinWith('setting')
                 ->andWhere(['or', ['domain_id' => $domain_id], ['domain_id' => $defaultDomain], ['domain_id' => null]])
                 ->andWhere(['or', ['language_id' => $language_id], ['language_id' => null]])
@@ -136,7 +136,7 @@ class SettingRepository
     {
         foreach($settings as $index => $setting){
             
-            $load = $data['SettingAssign'][$index];
+            $load = $data['SettingValue'][$index];
             $load['required'] = $setting->setting->required;
                         
             if($setting->load($load, '') && $setting->validate()){
@@ -159,7 +159,7 @@ class SettingRepository
     
     private function copySetting(ActiveRecord $setting, $domain_id, $language_id)
     {
-        $newSetting = new SettingAssign();
+        $newSetting = new SettingValue();
         $newSetting->attributes = $setting->attributes;
         
         $newSetting->domain_id   = $domain_id;
@@ -177,14 +177,14 @@ class SettingRepository
             'status'   => $status
         ]);
         
-        $settingAssign = new SettingAssign([
+        $settingValue = new SettingValue([
             'value'     => $form->value,
         ]);
         
         $transaction = \Yii::$app->db->beginTransaction();
         try{
             $this->save($setting);
-            $settingAssign->link(self::RELATE_NAME, $setting);
+            $settingValue->link(self::RELATE_NAME, $setting);
             $transaction->commit();
         }catch(\RuntimeException $e){
             $transaction->rollBack();

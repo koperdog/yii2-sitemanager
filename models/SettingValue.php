@@ -5,7 +5,7 @@ namespace koperdog\yii2sitemanager\models;
 use Yii;
 
 /**
- * This is the model class for table "{{%setting_assign}}".
+ * This is the model class for table "{{%setting_value}}".
  *
  * @property int $id
  * @property int $setting_id
@@ -13,7 +13,7 @@ use Yii;
  * @property int|null $language_id
  * @property int $value
  */
-class SettingAssign extends \yii\db\ActiveRecord
+class SettingValue extends \yii\db\ActiveRecord
 {
     public $required;
     /**
@@ -21,7 +21,7 @@ class SettingAssign extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%setting_assign}}';
+        return '{{%setting_value}}';
     }
 
     /**

@@ -63,6 +63,6 @@ class Language extends \yii\db\ActiveRecord
      */
     public function getSettings()
     {
-        return $this->hasMany(SettingAssign::className(), ['language_id' => 'id']);
+        return $this->hasMany(SettingValue::className(), ['language_id' => 'id']);
     }
 }

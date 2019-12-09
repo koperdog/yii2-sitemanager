@@ -63,16 +63,16 @@ class Setting extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAssign()
+    public function getValue()
     {
-        return $this->hasOne(SettingAssign::className(), ['setting_id' => 'id']);
+        return $this->hasOne(SettingValue::className(), ['setting_id' => 'id']);
     }
     
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAssigns()
+    public function getValues()
     {
-        return $this->hasMany(SettingAssign::className(), ['setting_id' => 'id']);
+        return $this->hasMany(SettingValue::className(), ['setting_id' => 'id']);
     }
 }

@@ -18,12 +18,51 @@
 
 namespace koperdog\yii2sitemanager\components;
 
+use koperdog\yii2sitemanager\repositories\read\LanguageReadRepository;
+use koperdog\yii2sitemanager\useCases\LanguageService;
+
 /**
  * Description of Languages
  *
  * @author Koperdog <koperdog@github.com>
  */
 class Languages extends \yii\base\Component
-{
-    //put your code here
+{    
+    private static $current;
+    
+    private $languageService;
+    private $languageRepository;
+    
+    public function __construct(LanguageService $service, LanguageReadRepository $repository)
+    {
+        parent::__construct();
+        
+        $this->languageService    = $service;
+        $this->languageRepository = $repository;
+        
+        $this->getCurrent(\Yii::$app->language);
+    }
+    
+    public function getCurrent(string $code_local): array
+    {
+        if(self::$current === null){
+            try{
+                self::$current = $this->languageRepository->getByCodeLocal($code_local);
+            } catch(\DomainException $e){
+                self::$current = $this->getDefault();
+            }
+        }
+        
+        return self::$current;
+    }
+    
+    public function getCurrentId(): int
+    {
+        return self::$current['id'];
+    }
+    
+    public function getDefault(): array
+    {
+        return $this->languageRepository->getDefault();
+    }
 }

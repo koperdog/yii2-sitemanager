@@ -14,7 +14,7 @@ use koperdog\yii2sitemanager\repositories\{
 };
 use \koperdog\yii2sitemanager\models\{
     Setting,
-    SettingAssign,
+    SettingValue,
     forms\SettingForm
 };
 
@@ -70,7 +70,7 @@ class SettingService {
     {
         $transaction = \Yii::$app->db->beginTransaction();
         try{
-            $setting->unlinkAll('assigns', true);
+            $setting->unlinkAll('values', true);
             $this->settingRepository->delete($setting);
             $transaction->commit();
         } catch(\Throwable $e) {

@@ -33,7 +33,7 @@ class Domains extends \yii\base\Component
      * 
      * @var type string
      */
-    private $currentName;
+    public $currentHost;
     
     private static $current;
     
@@ -44,19 +44,33 @@ class Domains extends \yii\base\Component
     public function __construct(DomainService $service, DomainReadRepository $repository) {
         parent::__construct();
         
-        $this->current = \Yii::$app->getRequest()->serverName;
+        $this->currentHost = \Yii::$app->getRequest()->serverName;
         
         $this->domainService    = $service;
         $this->domainRepository = $repository;
+        
+        $this->getDomain();
     }
     
-    public function getDomain(): string
+    public function getCurrentId(): int
     {
-        return $this->current;
+        return self::$current['id'];
+    }
+    
+    public function getDomain(): ?array
+    {
+        if(self::$current === null){
+            try{
+                self::$current = $this->domainRepository->getByDomain($this->currentHost);
+            } catch(\DomainException $e){
+                self::$current = $this->getDefault();
+            }
+        }
+        return self::$current;
     }
     
     public function getDefault(): array
     {
-        return $this->repository->getDefault();
+        return $this->domainRepository->getDefault();
     }
 }

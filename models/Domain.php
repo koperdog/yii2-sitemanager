@@ -52,6 +52,6 @@ class Domain extends \yii\db\ActiveRecord
      */
     public function getSettings()
     {
-        return $this->hasMany(SettingAssign::className(), ['domain_id' => 'id']);
+        return $this->hasMany(SettingValue::className(), ['domain_id' => 'id']);
     }
 }

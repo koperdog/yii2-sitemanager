@@ -53,4 +53,13 @@ class LanguageReadRepository
     {        
         return Language::find()->asArray()->all();
     }
+    
+    public function getByCodeLocal(string $code_local): array
+    {
+        if(!$model = Language::find()->where(['code_local' => $code_local])->asArray()->one()){
+            throw new \DomainException("The language with code local: {$code_local} does not exist!");
+        }
+        
+        return $model;
+    }
 }

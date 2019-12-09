@@ -22,7 +22,7 @@ use \koperdog\yii2sitemanager\repositories\DomainRepository;
 use \koperdog\yii2sitemanager\models\
 {
     Setting,
-    SettingAssign
+    SettingValue
 };
 
 /**
@@ -48,17 +48,19 @@ class SettingReadRepository
     public function getAllByStatus
     (
         int $status    = Setting::STATUS['GENERAL'],
-        int $domain_id = null,
-        int $language_id   = null
+        $domain_id     = null,
+        $language_id   = null,
+        $autoload      = null
     ): array
     {
         $defaultDomain = DomainRepository::getDefaultId();
         
-        $model = SettingAssign::find()
+        $model = SettingValue::find()
                 ->joinWith('setting')
                 ->where(['status' => $status])
                 ->andWhere(['or', ['domain_id' => $domain_id], ['domain_id' => $defaultDomain], ['domain_id' => null]])
                 ->andWhere(['or', ['language_id' => $language_id], ['language_id' => null]])
+                ->andFilterWhere(['setting.autoload' => $autoload])
                 ->indexBy('setting.name')
                 ->asArray()
                 ->all();
@@ -70,14 +72,15 @@ class SettingReadRepository
         return $model;
     }
     
-    public function getAllByDomain(int $domain_id, int $language_id = null): array
+    public function getAllByDomain(int $domain_id, int $language_id = null, $autoload = null): array
     {
         $defaultDomain = DomainRepository::getDefaultId();
         
-        $model = SettingAssign::find()
+        $model = SettingValue::find()
                 ->joinWith('setting')
                 ->andWhere(['or', ['domain_id' => $domain_id], ['domain_id' => $defaultDomain], ['domain_id' => null]])
                 ->andWhere(['or', ['language_id' => $language_id], ['language_id' => null]])
+                ->andFilterWhere(['setting.autoload' => $autoload])
                 ->indexBy('setting.name')
                 ->asArray()
                 ->all();
@@ -89,18 +92,18 @@ class SettingReadRepository
         return $model;
     }
     
-    public function getByName(string $name, int $domain_id = null, int $language_id = null): array
+    public function getByName(string $name, $domain_id = null, $language_id = null): array
     {
         $defaultDomain = DomainRepository::getDefaultId();
         
-        $model = SettingAssign::find()
+        $model = SettingValue::find()
                 ->joinWith('setting')
                 ->where(['name' => $name])
                 ->andWhere(['or', ['domain_id' => $domain_id], ['domain_id' => $defaultDomain], ['domain_id' => null]])
                 ->andWhere(['or', ['language_id' => $language_id], ['language_id' => null]])
                 ->indexBy('setting.name')
                 ->asArray()
-                ->all();
+                ->one();
         
         if(!$model){
             throw new \DomainException("Setting with name: {$name} does not exist");

@@ -38,10 +38,6 @@ $this->registerJsVar('i18n', ['confirm' => \Yii::t('sitemanager', 'Are you sure?
 
                 <?=$form->field($settings['site_name'], "[site_name]value")
                     ->label("Site name");?>
-
-                <?=$form->field($settings['main_page'], "[main_page]value")
-                    ->dropDownList(["Главная страница", "Тестовая страница"])
-                    ->label("Main page");?>
                 
             </div>
         </div>
