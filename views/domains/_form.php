@@ -11,8 +11,10 @@ use yii\widgets\ActiveForm;
 <div class="domain-form">
 
     <?php $form = ActiveForm::begin(); ?>
-
-    <?= $form->field($model, 'domain')->textInput(['maxlength' => true]) ?>
+    <div class="row">
+        <?= $form->field($model, 'name', ['options' => ['class' => 'col-md-6']])->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'domain', ['options' => ['class' => 'col-md-6']])->textInput(['maxlength' => true]) ?>
+    </div>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('sitemanager', 'Save'), ['class' => 'btn btn-success']) ?>

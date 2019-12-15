@@ -18,7 +18,7 @@ class DomainSearch extends Domain
     {
         return [
             [['id', 'is_default'], 'integer'],
-            [['domain'], 'safe'],
+            [['domain', 'name'], 'safe'],
         ];
     }
 
@@ -63,6 +63,8 @@ class DomainSearch extends Domain
         ]);
 
         $query->andFilterWhere(['like', 'domain', $this->domain]);
+        
+        $query->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;
     }

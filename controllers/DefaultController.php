@@ -53,11 +53,23 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
-        $settings = $this->findModels(Setting::STATUS['GENERAL']);
+        $language_id = \Yii::$app->session->get('_language');
+        $domain_id   = null;
+        
+        $settings = $this->findModels(
+                Setting::STATUS['GENERAL'],
+                $domain_id,
+                $language_id
+                );
         
         if(\Yii::$app->request->post()){
-            if($this->settingService->saveMultiple($settings, \Yii::$app->request->post())){
+            if($this->settingService->saveMultiple(
+                    $settings, 
+                    \Yii::$app->request->post(),
+                    $domain_id,
+                    $language_id)){
                 \Yii::$app->session->setFlash('success', \Yii::t('sitemanager', 'Success save'));
+                return $this->refresh();
             }
             else{
                 \Yii::$app->session->setFlash('error', \Yii::t('sitemanager/error', 'Error save'));

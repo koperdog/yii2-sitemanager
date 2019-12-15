@@ -38,6 +38,11 @@ class LanguageRepository
         return $searchModel->search($query);
     }
     
+    public function exist(int $id): bool
+    {
+        return Language::find()->where(['id' => $id])->exists();
+    }
+    
     /**
      * Checks if exists Setting by name
      * 

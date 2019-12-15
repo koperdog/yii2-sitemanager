@@ -27,5 +27,6 @@ return [
     "Are you sure?"  => "Вы уверены?",
     "Inactive"       => "Неактивный",
     "Active"         => "Активный",
-    "Default"        => "По умолчанию"
+    "Default"        => "По умолчанию",
+    "General"        => "Общий",
 ];

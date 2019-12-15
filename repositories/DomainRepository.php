@@ -39,6 +39,12 @@ class DomainRepository
     {        
         return $searchModel->search($query);
     }
+    
+    public function exist(int $id): bool
+    {
+        return Domain::find()->where(['id' => $id])->exists();
+    }
+    
     /**
      * Checks if exists Setting by name
      * 

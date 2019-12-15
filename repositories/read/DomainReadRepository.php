@@ -18,6 +18,7 @@
 
 namespace koperdog\yii2sitemanager\repositories\read;
 
+use koperdog\yii2sitemanager\interfaces\ReadReposotory;
 use koperdog\yii2sitemanager\models\Domain;
 
 /**
@@ -28,7 +29,7 @@ use koperdog\yii2sitemanager\models\Domain;
  * @author Koperdog <koperdog@github.com>
  * @version 1.0
  */
-class DomainReadRepository 
+class DomainReadRepository implements ReadReposotory
 {
    
     public function getById(int $id): array
@@ -56,5 +57,10 @@ class DomainReadRepository
         }
         
         return $model;
+    }
+    
+    public function getAll(): ?array
+    {
+        return Domain::find()->asArray()->all();
     }
 }

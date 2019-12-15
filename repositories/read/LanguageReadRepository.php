@@ -18,7 +18,8 @@
 
 namespace koperdog\yii2sitemanager\repositories\read;
 
-use \koperdog\yii2sitemanager\models\Language;
+use koperdog\yii2sitemanager\interfaces\ReadReposotory;
+use koperdog\yii2sitemanager\models\Language;
 
 /**
  * Repository for Language model
@@ -28,7 +29,7 @@ use \koperdog\yii2sitemanager\models\Language;
  * @author Koperdog <koperdog@github.com>
  * @version 1.0
  */
-class LanguageReadRepository 
+class LanguageReadRepository implements ReadReposotory
 {
    
     public function getById(int $id): array

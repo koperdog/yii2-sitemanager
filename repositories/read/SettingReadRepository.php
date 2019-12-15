@@ -18,8 +18,9 @@
 
 namespace koperdog\yii2sitemanager\repositories\read;
 
-use \koperdog\yii2sitemanager\repositories\DomainRepository;
-use \koperdog\yii2sitemanager\models\
+use koperdog\yii2sitemanager\interfaces\ReadReposotory;
+use koperdog\yii2sitemanager\repositories\DomainRepository;
+use koperdog\yii2sitemanager\models\
 {
     Setting,
     SettingValue
@@ -33,16 +34,12 @@ use \koperdog\yii2sitemanager\models\
  * @author Koperdog <koperdog@github.com>
  * @version 1.0
  */
-class SettingReadRepository 
+class SettingReadRepository implements ReadReposotory
 {
 
-    public function getById(int $id): Setting
-    {
-        if(!$model = Setting::find()->where(['id' => $id])->asArray()->one()){
-            throw new DomainException();
-        }
-        
-        return $model;
+    public function getById(int $id): array
+    {        
+        return Setting::find()->where(['id' => $id])->asArray()->one();
     }
     
     public function getAllByStatus
@@ -62,13 +59,10 @@ class SettingReadRepository
                 ->andWhere(['or', ['language_id' => $language_id], ['language_id' => null]])
                 ->andFilterWhere(['setting.autoload' => $autoload])
                 ->indexBy('setting.name')
+                ->groupBy('setting_id, id')
                 ->asArray()
                 ->all();
-        
-        if(!$model){
-            throw new \DomainException("Setting with status: {$status} does not exist");
-        }
-        
+                
         return $model;
     }
     
@@ -82,12 +76,9 @@ class SettingReadRepository
                 ->andWhere(['or', ['language_id' => $language_id], ['language_id' => null]])
                 ->andFilterWhere(['setting.autoload' => $autoload])
                 ->indexBy('setting.name')
+                ->groupBy('setting_id, id')
                 ->asArray()
                 ->all();
-        
-        if(!$model){
-            throw new \DomainException("Setting for domain id: {$domain_id} does not exist");
-        }
         
         return $model;
     }
@@ -105,10 +96,11 @@ class SettingReadRepository
                 ->asArray()
                 ->one();
         
-        if(!$model){
-            throw new \DomainException("Setting with name: {$name} does not exist");
-        }
-        
         return $model;
+    }
+    
+    public function getAll(): ?array
+    {
+        return Setting::find()->asArray()->all();
     }
 }

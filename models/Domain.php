@@ -8,6 +8,7 @@ use Yii;
  * This is the model class for table "{{%domain}}".
  *
  * @property int $id
+ * @property string $name
  * @property string $domain
  * @property int $is_default
  */
@@ -27,9 +28,10 @@ class Domain extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['domain', 'is_default'], 'required'],
+            [['domain', 'name'], 'required'],
             [['is_default'], 'boolean'],
             [['is_default'], 'default', 'value' => false],
+            [['name'], 'string', 'max' => 100],
             [['domain'], 'string', 'max' => 255],
             [['domain'], 'unique'],
         ];
@@ -42,6 +44,7 @@ class Domain extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('sitemanager', 'ID'),
+            'name' => Yii::t('sitemanager', 'Name'),
             'domain' => Yii::t('sitemanager', 'Domain'),
             'is_default' => Yii::t('sitemanager', 'Is Default'),
         ];

@@ -55,8 +55,8 @@ class DomainsController extends Controller
     ) 
     {
         parent::__construct($id, $module, $config);
-        $this->domainService           = $domainService;
-        $this->domainRepository        = $domainRepository; 
+        $this->domainService     = $domainService;
+        $this->domainRepository  = $domainRepository; 
         $this->settingService    = $settingService;
         $this->settingRepository = $settingRepository;
     }
@@ -95,6 +95,9 @@ class DomainsController extends Controller
                 \Yii::$app->session->setFlash('error', \Yii::t('sitemanager/error', 'Error create'));
             }
         }
+        else if(Yii::$app->request->post() && !$model->validate()){
+            \Yii::$app->session->setFlash('error', \Yii::t('sitemanager/error', 'Error create'));
+        }
 
         return $this->render('create', [
             'model' => $model,
@@ -110,11 +113,15 @@ class DomainsController extends Controller
      */
     public function actionUpdate($id)
     {
-        $language_id = \Yii::$app->params['language']['id'];
+        $language_id = \Yii::$app->session->get('_language');
         
         $model    = $this->findModel($id);
         $settings = $this->findDomainSettings($id, $language_id);
-
+        
+        
+//        debug($settings);
+//        exit();
+        
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if(
                 $this->domainService->updateDomain($model->id, \Yii::$app->request->post()) &&

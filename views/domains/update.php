@@ -22,10 +22,15 @@ $this->registerJsVar('i18n', ['confirm' => \Yii::t('sitemanager', 'Are you sure?
 
     <h1><?= Html::encode($this->title) ?></h1>
 
+    <?php debug(\Yii::$app->session->get('_domain'));?>
+    <?php debug(\Yii::$app->session->get('_language'));?>
     <div class="domain-form">
         <?php $form = ActiveForm::begin(); ?>
 
-        <?= $form->field($model, 'domain')->textInput(['maxlength' => true]) ?>
+        <div class="row">
+        <?= $form->field($model, 'name', ['options' => ['class' => 'col-md-6']])->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'domain', ['options' => ['class' => 'col-md-6']])->textInput(['maxlength' => true]) ?>
+        </div>
         
         <?php if(!empty($settings)):?>
         <div class="panel panel-default">

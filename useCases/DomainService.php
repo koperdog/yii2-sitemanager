@@ -49,6 +49,7 @@ class DomainService {
     public function create(DomainForm $domain): ?Domain
     {
         $newDomain = new Domain([
+            'name'       => $domain->name,
             'domain'     => $domain->domain,
             'is_default' => $domain->is_default
         ]);
