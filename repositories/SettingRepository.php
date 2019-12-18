@@ -62,12 +62,12 @@ class SettingRepository
     
     public function getAllByStatus
     (
-        int $status    = Setting::STATUS['GENERAL'],
-        int $domain_id = null,
-        int $language_id   = null
+        int $status      = Setting::STATUS['GENERAL'],
+        int $domain_id   = null,
+        int $language_id = null
     )
     {        
-        $model = $this->_get($domain_id, $language_id)->joinWith('setting')->indexBy('setting.name')->all();
+        $model = $this->_get($domain_id, $language_id, $status)->joinWith('setting')->indexBy('setting.name')->all();
         
         if(!$model){
             throw new \DomainException("Setting with status: {$status} does not exist");
@@ -78,7 +78,7 @@ class SettingRepository
     
     public function getAllByDomain(int $domain_id, int $language_id = null)
     {
-        $model = $this->_get($domain_id, $language_id)->joinWith('setting')->indexBy('setting.name')->all();
+        $model = $this->_get($domain_id, $language_id)->indexBy('setting.name')->all();
         
         if(!$model){
             throw new \DomainException("Setting for domain id: {$domain_id} does not exist");
@@ -144,33 +144,39 @@ class SettingRepository
     }
     
     /**
-     * 
+     * Generates the monster query for gets setting value
      * 
      * @param type $domain_id
      * @param type $language_id
      * @return \yii\db\ActiveQuery
      */
-    private function _get($domain_id = null, $language_id = null): \yii\db\ActiveQuery
+    private function _get($domain_id = null, $language_id = null, $status = null): \yii\db\ActiveQuery
     {
         $defaultDomain = DomainRepository::getDefaultId();
         
-        $query = SettingValue::find()->andWhere(['domain_id' => $domain_id, 'language_id' => $language_id]);
+        $query = SettingValue::find()
+                ->joinWith('setting')
+                ->andWhere(['domain_id' => $domain_id, 'language_id' => $language_id])
+                ->andFilterWhere(['setting.status' => $status]);
         
         if($language_id){
             $subquery = SettingValue::find()
+                ->joinWith('setting')
                 ->andWhere(['domain_id' => $domain_id, 'language_id' => null])
                 ->andWhere(['NOT IN', 'setting_id', 
                 (new \yii\db\Query)
                 ->select('setting_id')
                 ->from(SettingValue::tableName())
                 ->andWhere(['domain_id' => $domain_id, 'language_id' => $language_id])
-                ]);
+                ])
+                ->andFilterWhere(['setting.status' => $status]);
             
             $query->union($subquery);
         }
         
         if($domain_id != $defaultDomain && $domain_id){
             $subquery = SettingValue::find()
+                ->joinWith('setting')
                 ->andWhere(['domain_id' => $defaultDomain, 'language_id' => $language_id])
                 ->andWhere(['NOT IN', 'setting_id', 
                 (new \yii\db\Query)
@@ -178,13 +184,15 @@ class SettingRepository
                 ->from(SettingValue::tableName())
                 ->andWhere(['domain_id' => $domain_id, 'language_id' => $language_id])
                 ->orWhere(['domain_id' => $domain_id, 'language_id' => null])
-                ]);
+                ])
+                ->andFilterWhere(['setting.status' => $status]);
             
             $query->union($subquery);
         }
         
         if($domain_id != $defaultDomain && $domain_id && $language_id){
             $subquery = SettingValue::find()
+                ->joinWith('setting')
                 ->andWhere(['domain_id' => $defaultDomain, 'language_id' => null])
                 ->andWhere(['NOT IN', 'setting_id', 
                 (new \yii\db\Query)
@@ -193,13 +201,15 @@ class SettingRepository
                 ->andWhere(['domain_id' => $domain_id, 'language_id' => $language_id])
                 ->orWhere(['domain_id' => $domain_id, 'language_id' => null])
                 ->orWhere(['domain_id' => $defaultDomain, 'language_id' => $language_id])
-                ]);
+                ])
+                ->andFilterWhere(['setting.status' => $status]);
             
             $query->union($subquery);
         }
         
         if($domain_id && $language_id){
             $subquery = SettingValue::find()
+                ->joinWith('setting')
                 ->andWhere(['domain_id' => null, 'language_id' => $language_id])
                 ->andWhere(['NOT IN', 'setting_id', 
                 (new \yii\db\Query)
@@ -209,7 +219,8 @@ class SettingRepository
                 ->orWhere(['domain_id' => $domain_id, 'language_id' => null])
                 ->orWhere(['domain_id' => $defaultDomain, 'language_id' => $language_id])
                 ->orWhere(['domain_id' => $defaultDomain, 'language_id' => null])
-                ]);
+                ])
+                ->andFilterWhere(['setting.status' => $status]);
             
             $query->union($subquery);
         }
@@ -229,8 +240,10 @@ class SettingRepository
             if($language_id) $exclude->orWhere(['domain_id' => null, 'language_id' => $language_id]);
             
             $subquery = SettingValue::find()
+                ->joinWith('setting')
                 ->andWhere(['domain_id' => null, 'language_id' => null])
-                ->andWhere(['NOT IN', 'setting_id', $exclude]);
+                ->andWhere(['NOT IN', 'setting_id', $exclude])
+                ->andFilterWhere(['setting.status' => $status]);
             
             $query->union($subquery);
         }
