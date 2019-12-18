@@ -18,7 +18,8 @@
 
 namespace koperdog\yii2sitemanager\repositories;
 
-use \yii\db\ActiveRecord;
+use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 use koperdog\yii2sitemanager\models\
 {
     Setting,
@@ -65,16 +66,8 @@ class SettingRepository
         int $domain_id = null,
         int $language_id   = null
     )
-    {
-        $defaultDomain = DomainRepository::getDefaultId();
-        
-        $model = SettingValue::find()
-                ->joinWith('setting')
-                ->where(['status' => $status])
-                ->andWhere(['or', ['domain_id' => $domain_id], ['domain_id' => $defaultDomain], ['domain_id' => null]])
-                ->andWhere(['or', ['language_id' => $language_id], ['language_id' => null]])
-                ->indexBy('setting.name')
-                ->all();
+    {        
+        $model = $this->_get($domain_id, $language_id)->joinWith('setting')->indexBy('setting.name')->all();
         
         if(!$model){
             throw new \DomainException("Setting with status: {$status} does not exist");
@@ -85,14 +78,7 @@ class SettingRepository
     
     public function getAllByDomain(int $domain_id, int $language_id = null)
     {
-        $defaultDomain = DomainRepository::getDefaultId();
-        
-        $model = SettingValue::find()
-                ->joinWith('setting')
-                ->andWhere(['or', ['domain_id' => $domain_id], ['domain_id' => $defaultDomain], ['domain_id' => null]])
-                ->andWhere(['or', ['language_id' => $language_id], ['language_id' => null]])
-                ->indexBy('setting.name')
-                ->all();
+        $model = $this->_get($domain_id, $language_id)->joinWith('setting')->indexBy('setting.name')->all();
         
         if(!$model){
             throw new \DomainException("Setting for domain id: {$domain_id} does not exist");
@@ -155,6 +141,101 @@ class SettingRepository
         }
         
         return true;
+    }
+    
+    /**
+     * 
+     * 
+     * @param type $domain_id
+     * @param type $language_id
+     * @return \yii\db\ActiveQuery
+     */
+    private function _get($domain_id = null, $language_id = null): \yii\db\ActiveQuery
+    {
+        $defaultDomain = DomainRepository::getDefaultId();
+        
+        $query = SettingValue::find()->andWhere(['domain_id' => $domain_id, 'language_id' => $language_id]);
+        
+        if($language_id){
+            $subquery = SettingValue::find()
+                ->andWhere(['domain_id' => $domain_id, 'language_id' => null])
+                ->andWhere(['NOT IN', 'setting_id', 
+                (new \yii\db\Query)
+                ->select('setting_id')
+                ->from(SettingValue::tableName())
+                ->andWhere(['domain_id' => $domain_id, 'language_id' => $language_id])
+                ]);
+            
+            $query->union($subquery);
+        }
+        
+        if($domain_id != $defaultDomain && $domain_id){
+            $subquery = SettingValue::find()
+                ->andWhere(['domain_id' => $defaultDomain, 'language_id' => $language_id])
+                ->andWhere(['NOT IN', 'setting_id', 
+                (new \yii\db\Query)
+                ->select('setting_id')
+                ->from(SettingValue::tableName())
+                ->andWhere(['domain_id' => $domain_id, 'language_id' => $language_id])
+                ->orWhere(['domain_id' => $domain_id, 'language_id' => null])
+                ]);
+            
+            $query->union($subquery);
+        }
+        
+        if($domain_id != $defaultDomain && $domain_id && $language_id){
+            $subquery = SettingValue::find()
+                ->andWhere(['domain_id' => $defaultDomain, 'language_id' => null])
+                ->andWhere(['NOT IN', 'setting_id', 
+                (new \yii\db\Query)
+                ->select('setting_id')
+                ->from(SettingValue::tableName())
+                ->andWhere(['domain_id' => $domain_id, 'language_id' => $language_id])
+                ->orWhere(['domain_id' => $domain_id, 'language_id' => null])
+                ->orWhere(['domain_id' => $defaultDomain, 'language_id' => $language_id])
+                ]);
+            
+            $query->union($subquery);
+        }
+        
+        if($domain_id && $language_id){
+            $subquery = SettingValue::find()
+                ->andWhere(['domain_id' => null, 'language_id' => $language_id])
+                ->andWhere(['NOT IN', 'setting_id', 
+                (new \yii\db\Query)
+                ->select('setting_id')
+                ->from(SettingValue::tableName())
+                ->andWhere(['domain_id' => $domain_id, 'language_id' => $language_id])
+                ->orWhere(['domain_id' => $domain_id, 'language_id' => null])
+                ->orWhere(['domain_id' => $defaultDomain, 'language_id' => $language_id])
+                ->orWhere(['domain_id' => $defaultDomain, 'language_id' => null])
+                ]);
+            
+            $query->union($subquery);
+        }
+        
+        if($domain_id || $language_id){
+            
+            $exclude = (new \yii\db\Query)
+                    ->select('setting_id')
+                    ->from(SettingValue::tableName())
+                    ->andWhere(['domain_id' => $domain_id, 'language_id' => $language_id]);
+            
+            if($domain_id) $exclude->orWhere(['domain_id' => $domain_id, 'language_id' => null]);
+            
+            $exclude->orWhere(['domain_id' => $defaultDomain, 'language_id' => $language_id])
+                ->orWhere(['domain_id' => $defaultDomain, 'language_id' => null]);
+            
+            if($language_id) $exclude->orWhere(['domain_id' => null, 'language_id' => $language_id]);
+            
+            $subquery = SettingValue::find()
+                ->andWhere(['domain_id' => null, 'language_id' => null])
+                ->andWhere(['NOT IN', 'setting_id', $exclude]);
+            
+            $query->union($subquery);
+        }
+        
+        return $query;
     }
     
     private function copySetting(ActiveRecord $setting, $domain_id, $language_id)
