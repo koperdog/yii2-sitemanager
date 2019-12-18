@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @link https://github.com/koperdog/yii2-treeview
+ * @copyright Copyright (c) 2019 Koperdog
+ * @license https://github.com/koperdog/yii2-sitemanager/blob/master/LICENSE
+ */
+
 namespace koperdog\yii2sitemanager\controllers;
 
 use Yii;
@@ -20,6 +26,9 @@ use \koperdog\yii2sitemanager\models\forms\DomainForm;
 
 /**
  * DomainsController implements the CRUD actions for Domain model.
+ * 
+ * @author Koperdog <koperdog@dev.gmail.com>
+ * @version 1.0
  */
 class DomainsController extends Controller
 {

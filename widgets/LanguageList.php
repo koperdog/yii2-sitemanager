@@ -1,9 +1,9 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @link https://github.com/koperdog/yii2-treeview
+ * @copyright Copyright (c) 2019 Koperdog
+ * @license https://github.com/koperdog/yii2-sitemanager/blob/master/LICENSE
  */
 
 namespace koperdog\yii2sitemanager\widgets;
@@ -13,18 +13,31 @@ use yii\helpers\Url;
 
 
 /**
- * Description of DomainList
+ * Widget domains list, changes admin language for controll content
  *
- * @author Koperdog <koperdog@github.com>
+ * @author Koperdog <koperdog@dev.gmail.com>
+ * @version 1.0
  */
 class LanguageList extends \yii\base\Widget
 {
-    
+    /**
+     * @var array|string Link controller change language
+     */
     public $link = ['/manager/ajax/change-language'];
     
+    /**
+     * @var array options of tag select
+     */
     public $optionsList = [];
+    
+    /**
+     * @var array options for wrapper
+     */
     public $options = ['class' => 'change-zone'];
     
+    /**
+     * select koperdog\yii2sitemanager\widgets\base\LanguageSelect
+     */
     private $select;
     
     public function init()

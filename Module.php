@@ -1,7 +1,19 @@
 <?php
 
+/**
+ * @link https://github.com/koperdog/yii2-treeview
+ * @copyright Copyright (c) 2019 Koperdog
+ * @license https://github.com/koperdog/yii2-sitemanager/blob/master/LICENSE
+ */
+
 namespace koperdog\yii2sitemanager;
 
+/**
+ * Module
+ *
+ * @author Koperdog <koperdog@dev.gmail.com>
+ * @version 1.0
+ */
 class Module extends \yii\base\Module
 {
     const MODULE_NAME = "sitemanager";

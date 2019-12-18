@@ -1,9 +1,14 @@
 <?php
 
+/**
+ * @link https://github.com/koperdog/yii2-treeview
+ * @copyright Copyright (c) 2019 Koperdog
+ * @license https://github.com/koperdog/yii2-sitemanager/blob/master/LICENSE
+ */
+
 namespace koperdog\yii2sitemanager\controllers;
 
 use yii\web\Controller;
-use yii\web\ForbiddenHttpException;
 use yii\filters\AjaxFilter;
 use koperdog\yii2sitemanager\repositories\{
     DomainRepository, 
@@ -12,6 +17,9 @@ use koperdog\yii2sitemanager\repositories\{
 
 /**
  * CategoryController implements the CRUD actions for Category model.
+ * 
+ * @author Koperdog <koperdog@dev.gmail.com>
+ * @version 1.0
  */
 class AjaxController extends Controller
 {

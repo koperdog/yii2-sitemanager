@@ -1,9 +1,9 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @link https://github.com/koperdog/yii2-treeview
+ * @copyright Copyright (c) 2019 Koperdog
+ * @license https://github.com/koperdog/yii2-sitemanager/blob/master/LICENSE
  */
 
 namespace koperdog\yii2sitemanager\widgets\base;
@@ -13,18 +13,30 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 
 /**
- * Description of baseSelect
+ * Base class for generating select tag
  *
- * @author Koperdog <koperdog@github.com>
+ * @author Koperdog <koperdog@dev.gmail.com>
+ * @version 1.0
  */
 class Select extends \yii\base\BaseObject{
-    
+    /**
+     * @var string name of select tag 
+     */
     protected $selectName = "select";
     
+    /**
+     * @var \yii\base\Widget owner this select tag
+     */
     public $select;
     
+    /**
+     * @var ReadReposotory for getting value
+     */
     protected $repository;
     
+    /**
+     * @var string session admin name for controll content
+     */
     protected $sessionName = "_select";
     
     public function __construct(ReadReposotory $repository, $config = [])
@@ -34,6 +46,11 @@ class Select extends \yii\base\BaseObject{
         $this->repository = $repository;
     }
     
+    /**
+     * Render list section
+     * 
+     * @return string
+     */
     public function render(): string
     {
         $options = ArrayHelper::merge(
@@ -48,6 +65,11 @@ class Select extends \yii\base\BaseObject{
         return $content;
     }
     
+    /**
+     * Render items
+     * 
+     * @return string
+     */
     protected function renderItems(): string
     {
         $items    = $this->repository->getAll();
@@ -61,6 +83,11 @@ class Select extends \yii\base\BaseObject{
         return $content;
     }
     
+    /**
+     * Render default item
+     * 
+     * @return string
+     */
     protected function defaultItemRender(): string
     {
         $selected = (\Yii::$app->session->get($this->sessionName) == null);

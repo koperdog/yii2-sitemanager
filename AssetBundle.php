@@ -1,14 +1,18 @@
 <?php
 
 /**
- * AssetBundle.php
- * @author koperdog<koperdog@gmail.com>
+ * @link https://github.com/koperdog/yii2-treeview
+ * @copyright Copyright (c) 2019 Koperdog
+ * @license https://github.com/koperdog/yii2-sitemanager/blob/master/LICENSE
  */
 
 namespace koperdog\yii2sitemanager;
 
 /**
- * Class AssetBundle
+ * AssetBundle
+ *
+ * @author Koperdog <koperdog@dev.gmail.com>
+ * @version 1.0
  */
 class AssetBundle extends \yii\web\AssetBundle
 {

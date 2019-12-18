@@ -1,9 +1,9 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @link https://github.com/koperdog/yii2-treeview
+ * @copyright Copyright (c) 2019 Koperdog
+ * @license https://github.com/koperdog/yii2-sitemanager/blob/master/LICENSE
  */
 
 namespace koperdog\yii2sitemanager\useCases;
@@ -14,17 +14,24 @@ use koperdog\yii2sitemanager\repositories\{
 };
 use \koperdog\yii2sitemanager\models\{
     Setting,
-    SettingValue,
     forms\SettingForm
 };
 
 /**
- * Description of SettingService
+ * Setting (UseCases) for setting, setting_value model
  *
- * @author Koperdog <koperdog@github.com>
+ * @author Koperdog <koperdog@dev.gmail.com>
+ * @version 1.0
  */
 class SettingService {
+    /**
+     * @var SettingRepository repository of setting model
+     */
     private $settingRepository;
+    
+    /**
+     * @var DomainRepository repository of domain model
+     */
     private $domainRepository;
     
     public function __construct(SettingRepository $setting, DomainRepository $domain)
@@ -33,11 +40,27 @@ class SettingService {
         $this->domainRepository  = $domain;
     }
     
+    /**
+     * Creates setting
+     * 
+     * @param SettingForm $form
+     * @param type $status
+     * @return bool
+     */
     public function create(SettingForm $form, $status = Setting::STATUS['CUSTOM']): bool
     {
         return $this->settingRepository->create($form, $status);
     }
     
+    /**
+     * Saves all values of settings
+     * 
+     * @param array $settings
+     * @param array $data
+     * @param int $domain_id
+     * @param int $language_id
+     * @return bool
+     */
     public function saveMultiple(array $settings, array $data, int $domain_id = null, int $language_id = null): bool
     {
         $transaction = \Yii::$app->db->beginTransaction();
@@ -52,6 +75,12 @@ class SettingService {
         return $success;
     }
     
+    /**
+     * Saves value setting
+     * 
+     * @param Setting $setting
+     * @return bool
+     */
     public function save(Setting $setting): bool
     {
         $transaction = \Yii::$app->db->beginTransaction();
@@ -66,6 +95,12 @@ class SettingService {
         return true;
     }
     
+    /**
+     * Deletes setting
+     * 
+     * @param Setting $setting
+     * @return bool
+     */
     public function delete(Setting $setting): bool
     {
         $transaction = \Yii::$app->db->beginTransaction();

@@ -28,7 +28,7 @@ class ZoneSelect extends \yii\base\Widget{
     
     private function render(): string
     {
-        $content  = Html::beginTag('div', $this->options)
+        $content  = Html::beginTag('div', $this->options);
         
         $content .= $this->renderSelects();
         $content .= $this->renderSendBtn();

@@ -1,9 +1,9 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @link https://github.com/koperdog/yii2-treeview
+ * @copyright Copyright (c) 2019 Koperdog
+ * @license https://github.com/koperdog/yii2-sitemanager/blob/master/LICENSE
  */
 
 namespace koperdog\yii2sitemanager\useCases;
@@ -16,12 +16,21 @@ use \koperdog\yii2sitemanager\models\Domain;
 use \koperdog\yii2sitemanager\models\forms\DomainForm;
 
 /**
- * Description of SettingService
+ * Service (UseCases) for domain model
  *
- * @author Koperdog <koperdog@github.com>
+ * @author Koperdog <koperdog@dev.gmail.com>
+ * @version 1.0
  */
 class DomainService {
+    
+    /**
+     * @var SettingRepository repository of setting model 
+     */
     private $settingRepository;
+    
+    /**
+     * @var DomainRepository repository of domain model 
+     */
     private $domainRepository;
     
     public function __construct(DomainRepository $domain, SettingRepository $setting)
@@ -30,6 +39,13 @@ class DomainService {
         $this->domainRepository  = $domain;
     }
     
+    /**
+     * Updates domain
+     * 
+     * @param int $id
+     * @param array $data
+     * @return bool
+     */
     public function updateDomain(int $id, array $data): bool
     {
         $domain = $this->domainRepository->getById($id);
@@ -46,6 +62,12 @@ class DomainService {
         return true;
     }
     
+    /**
+     * Creates domain
+     * 
+     * @param DomainForm $domain
+     * @return Domain|null
+     */
     public function create(DomainForm $domain): ?Domain
     {
         $newDomain = new Domain([
@@ -66,6 +88,12 @@ class DomainService {
         return $newDomain;
     }
     
+    /**
+     * Deletes domain
+     * 
+     * @param Domain $domain
+     * @return bool
+     */
     public function delete(Domain $domain): bool
     {
         $transaction = \Yii::$app->db->beginTransaction();
@@ -80,6 +108,12 @@ class DomainService {
         return true;
     }
     
+    /**
+     * Makes default domain
+     * 
+     * @param Domain $model
+     * @return bool
+     */
     public function makeDefault(Domain $model): bool
     {
         $transaction = \Yii::$app->db->beginTransaction();

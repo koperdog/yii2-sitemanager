@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @link https://github.com/koperdog/yii2-treeview
+ * @copyright Copyright (c) 2019 Koperdog
+ * @license https://github.com/koperdog/yii2-sitemanager/blob/master/LICENSE
+ */
+
 namespace koperdog\yii2sitemanager\controllers;
 
 use Yii;
@@ -13,6 +19,9 @@ use \koperdog\yii2sitemanager\repositories\LanguageRepository;
 
 /**
  * LanguagesController implements the CRUD actions for Language model.
+ * 
+ * @author Koperdog <koperdog@dev.gmail.com>
+ * @version 1.0
  */
 class LanguagesController extends Controller
 {

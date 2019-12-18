@@ -1,9 +1,9 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @link https://github.com/koperdog/yii2-treeview
+ * @copyright Copyright (c) 2019 Koperdog
+ * @license https://github.com/koperdog/yii2-sitemanager/blob/master/LICENSE
  */
 
 namespace koperdog\yii2sitemanager\useCases;
@@ -15,11 +15,15 @@ use \koperdog\yii2sitemanager\models\{
 };
 
 /**
- * Description of SettingService
+ * Language Service (UseCases) for langauge model
  *
- * @author Koperdog <koperdog@github.com>
+ * @author Koperdog <koperdog@dev.gmail.com>
+ * @version 1.0
  */
 class LanguageService {
+    /**
+     * @var LanguageRepository repository of language model
+     */
     private $languageRepository;
     
     public function __construct(LanguageRepository $language)
@@ -27,6 +31,11 @@ class LanguageService {
         $this->languageRepository = $language;
     }
     
+    /**
+     * Updates language
+     * @param Language $model
+     * @return bool
+     */
     public function update(Language $model): bool
     {
         $transaction = \Yii::$app->db->beginTransaction();
@@ -41,6 +50,12 @@ class LanguageService {
         return true;
     }
     
+    /**
+     * Creates language
+     * 
+     * @param LanguageForm $form
+     * @return bool
+     */
     public function create(LanguageForm $form): bool
     {
         $language = new Language([
@@ -63,6 +78,12 @@ class LanguageService {
         return true;
     }
     
+    /**
+     * Deletes language
+     * 
+     * @param Language $model
+     * @return bool
+     */
     public function delete(Language $model): bool
     {
         $transaction = \Yii::$app->db->beginTransaction();
@@ -77,6 +98,12 @@ class LanguageService {
         return true;
     }
     
+    /**
+     * Makes default langauge
+     * 
+     * @param Language $model
+     * @return bool
+     */
     public function makeDefault(Language $model): bool
     {
         $transaction = \Yii::$app->db->beginTransaction();
