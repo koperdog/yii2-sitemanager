@@ -5,25 +5,21 @@ namespace koperdog\yii2sitemanager\models;
 use Yii;
 
 /**
- * This is the model class for table "domain".
+ * This is the model class for table "{{%domain}}".
  *
  * @property int $id
+ * @property string $name
  * @property string $domain
- * @property int $main
- *
- * @property DomainSetting[] $domainSettings
- * @property Setting[] $settings
+ * @property int $is_default
  */
 class Domain extends \yii\db\ActiveRecord
 {
-    const MAIN = 1;
-    
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'domain';
+        return '{{%domain}}';
     }
 
     /**
@@ -32,10 +28,12 @@ class Domain extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['domain'], 'required'],
+            [['domain', 'name'], 'required'],
             [['is_default'], 'boolean'],
-            [['is_default'], 'default', 'value' => false], 
+            [['is_default'], 'default', 'value' => false],
+            [['name'], 'string', 'max' => 100],
             [['domain'], 'string', 'max' => 255],
+            [['domain'], 'unique'],
         ];
     }
 
@@ -46,24 +44,17 @@ class Domain extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('sitemanager', 'ID'),
+            'name' => Yii::t('sitemanager', 'Name'),
             'domain' => Yii::t('sitemanager', 'Domain'),
-            'is_default' => Yii::t('sitemanager', 'Main'),
+            'is_default' => Yii::t('sitemanager', 'Is Default'),
         ];
     }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getDomainSettings()
-    {
-        return $this->hasMany(DomainSetting::className(), ['domain_id' => 'id']);
-    }
-
+    
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getSettings()
     {
-        return $this->hasMany(Setting::className(), ['domain_id' => 'id']);
+        return $this->hasMany(SettingValue::className(), ['domain_id' => 'id']);
     }
 }

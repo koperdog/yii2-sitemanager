@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Language */
+/* @var $model koperdog\yii2sitemanager\models\Language */
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('sitemanager', 'Languages'), 'url' => ['index']];
@@ -34,6 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'code_local',
             'name',
             'status',
+            'is_default',
         ],
     ]) ?>
 

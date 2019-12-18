@@ -1,11 +1,12 @@
 <?php
 
-namespace koperdog\yii2sitemanager\models;
+namespace koperdog\yii2sitemanager\models\forms;
 
 use Yii;
+use yii\base\Model;
 
 /**
- * This is the model class for table "{{%language}}".
+ * This is the model class
  *
  * @property int $id
  * @property string $code
@@ -14,17 +15,16 @@ use Yii;
  * @property int $status
  * @property int $is_default
  */
-class Language extends \yii\db\ActiveRecord
+class LanguageForm extends Model
 {
-    const STATUS = ['INACTIVE' => 0, 'ACTIVE' => 1];
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
-        return '{{%language}}';
-    }
-
+    const ACTIVE = 1;
+    
+    public $code;
+    public $code_local;
+    public $name;
+    public $status;
+    public $is_default;
+    
     /**
      * {@inheritdoc}
      */
@@ -33,13 +33,18 @@ class Language extends \yii\db\ActiveRecord
         return [
             [['code', 'code_local', 'name', 'status', 'is_default'], 'required'],
             [['status'], 'integer'],
-            [['status'], 'default', 'value' => self::STATUS['ACTIVE']],
+            [['status'], 'default', 'value' => self::ACTIVE],
             [['is_default'], 'boolean'],
             [['is_default'], 'default', 'value' => false],
             [['code'], 'string', 'max' => 2],
             [['code_local'], 'string', 'max' => 32],
             [['name'], 'string', 'max' => 100],
-            [['code', 'code_local'], 'unique'],
+            [
+                ['code', 'code_local'], 
+                'unique', 
+                'targetClass' => 'koperdog\yii2sitemanager\models\Language', 
+                'message' => 'This name has already been taken.'
+            ],
         ];
     }
 
@@ -56,13 +61,5 @@ class Language extends \yii\db\ActiveRecord
             'status' => Yii::t('sitemanager', 'Status'),
             'is_default' => Yii::t('sitemanager', 'Is default'),
         ];
-    }
-    
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSettings()
-    {
-        return $this->hasMany(SettingValue::className(), ['language_id' => 'id']);
     }
 }

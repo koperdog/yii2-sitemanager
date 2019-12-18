@@ -1,77 +1,98 @@
 <?php
 
-/*
- * Copyright 2019 Koperdog <koperdog@github.com>.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/**
+ * @link https://github.com/koperdog/yii2-treeview
+ * @copyright Copyright (c) 2019 Koperdog
+ * @license https://github.com/koperdog/yii2-sitemanager/blob/master/LICENSE
  */
 
 namespace koperdog\yii2sitemanager\repositories;
 
-use koperdog\yii2sitemanager\models\Language;
+use \koperdog\yii2sitemanager\models\{
+    Language, 
+    LanguageSearch
+};
 
 /**
  * Repository for Language model
  * 
  * Repository for Language model, implements repository design
  *
- * @author Koperdog <koperdog@github.com>
+ * @author Koperdog <koperdog@dev.gmail.com>
  * @version 1.0
  */
-class LanguageRepository {
+class LanguageRepository 
+{
+    public function search(LanguageSearch $searchModel, array $query = [])
+    {        
+        return $searchModel->search($query);
+    }
     
-    /**
-     * Gets all languages
-     * 
-     * @return array|null
-     * @throws \DomainException
-     */
-    public function getAll(): ?array
+    public function exist(int $id): bool
     {
-        if(!$models = Language::findAll()){
-            throw new \DomainException();
-        }
-        return $models;
+        return Language::find()->where(['id' => $id])->exists();
     }
     
     /**
-     * Gets language by id
+     * Checks if exists Setting by name
      * 
-     * @param int $id
-     * @return Language
-     * @throws \DomainException
+     * @param string $name
+     * @return bool
      */
-    public function get(int $id): Language
+    public function existSetting(string $name): bool
+    {
+        return Language::find()->where(['name' => $name])->exists();
+    }
+    
+    public function getById(int $id): Language
     {
         if(!$model = Language::findOne($id)){
-            throw new \DomainException();
+            throw new \DomainException("The language with id: {$id} does not exist");
         }
         
         return $model;
     }
     
     /**
-     * Saves language
+     * Saves setting
      * 
-     * @param Language $setting
-     * @return bool
-     * @throws \RuntimeException
+     * @return array|null
+     * @throws \DomainException
      */
-    public function save(Language $setting): bool
+    public function save(Language $language): bool
     {
-        if(!$setting->save()){
+        if(!$language->save()){
             throw new \RuntimeException();
         }
         return true;
+    }
+    
+    public function delete(Language $language): bool
+    {
+        if(!$language->delete()){
+            throw new RuntimeException();
+        }
+        
+        return true;
+    }
+    
+    public function getDefault(): Language
+    {
+        if(!$model = Language::find()->where(['is_default' => true])->one()){
+            throw new \DomainException("The default language does not exist!");
+        }
+        
+        return $model;
+    }
+    
+    public static function getDefaultId(): ?int
+    {
+        $model = Language::find()->select('id')->where(['is_default' => true])->one();
+        
+        if(!$model){
+            return null;
+        }
+        
+        return $model->id;
     }
 }

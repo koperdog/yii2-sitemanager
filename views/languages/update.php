@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Language */
+/* @var $model koperdog\yii2sitemanager\models\Language */
 
 $this->title = Yii::t('sitemanager', 'Update Language: {name}', [
     'name' => $model->name,

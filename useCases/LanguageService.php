@@ -1,34 +1,124 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @link https://github.com/koperdog/yii2-treeview
+ * @copyright Copyright (c) 2019 Koperdog
+ * @license https://github.com/koperdog/yii2-sitemanager/blob/master/LICENSE
  */
 
 namespace koperdog\yii2sitemanager\useCases;
 
-use koperdog\yii2sitemanager\repositories\{
-    SettingRepository,
-    DomainRepository,
-    LanguageRepository
+use koperdog\yii2sitemanager\repositories\LanguageRepository;
+use \koperdog\yii2sitemanager\models\{
+    Language, 
+    forms\LanguageForm
 };
 
 /**
- * Description of SettingService
+ * Language Service (UseCases) for langauge model
  *
- * @author Koperdog <koperdog@github.com>
+ * @author Koperdog <koperdog@dev.gmail.com>
+ * @version 1.0
  */
 class LanguageService {
-    private $setting;
-    private $domain;
-    private $language;
+    /**
+     * @var LanguageRepository repository of language model
+     */
+    private $languageRepository;
     
-    public function __construct(DomainRepository $setting, SettingRepository $domain, LanguageRepository $language)
+    public function __construct(LanguageRepository $language)
     {
-        $this->setting  = $setting;
-        $this->domain   = $domain;
-        $this->language = $language;
+        $this->languageRepository = $language;
     }
     
+    /**
+     * Updates language
+     * @param Language $model
+     * @return bool
+     */
+    public function update(Language $model): bool
+    {
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            $this->languageRepository->save($model);
+            $transaction->commit();
+        } catch(\Throwable $e) {
+            $transaction->rollBack();
+            return false;
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Creates language
+     * 
+     * @param LanguageForm $form
+     * @return bool
+     */
+    public function create(LanguageForm $form): bool
+    {
+        $language = new Language([
+            'name'       => $form->name,
+            'code'       => $form->code,
+            'code_local' => $form->code_local,
+            'status'     => $form->status,
+            'is_default' => $form->is_default,
+        ]);
+        
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            $this->languageRepository->save($language);
+            $transaction->commit();
+        } catch(\Throwable $e) {
+            $transaction->rollBack();
+            return false;
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Deletes language
+     * 
+     * @param Language $model
+     * @return bool
+     */
+    public function delete(Language $model): bool
+    {
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            $model->unlinkAll('settings', true);
+            $this->languageRepository->delete($model);
+            $transaction->commit();
+        } catch(\Throwable $e) {
+            $transaction->rollBack();
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * Makes default langauge
+     * 
+     * @param Language $model
+     * @return bool
+     */
+    public function makeDefault(Language $model): bool
+    {
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            $default = $this->languageRepository->getDefault();
+            $default->is_default = false;
+            
+            $model->is_default   = true;
+            $this->languageRepository->save($default);
+            $this->languageRepository->save($model);
+            $transaction->commit();
+        } catch(\Throwable $e) {
+            $transaction->rollBack();
+            return false;
+        }
+        return true;
+    }
 }

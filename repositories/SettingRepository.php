@@ -1,35 +1,34 @@
 <?php
 
-/*
- * Copyright 2019 Koperdog <koperdog@github.com>.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/**
+ * @link https://github.com/koperdog/yii2-treeview
+ * @copyright Copyright (c) 2019 Koperdog
+ * @license https://github.com/koperdog/yii2-sitemanager/blob/master/LICENSE
  */
 
 namespace koperdog\yii2sitemanager\repositories;
 
-use koperdog\yii2sitemanager\models\Setting;
-use \yii\base\Model;
+use yii\db\ActiveRecord;
+use koperdog\yii2sitemanager\repositories\query\SettingValueQuery;
+use koperdog\yii2sitemanager\models\
+{
+    Setting,
+    SettingValue,
+    forms\SettingForm
+};
 
 /**
  * Repository for Settings model
  * 
  * Repository for Settings model, implements repository design
  *
- * @author Koperdog <koperdog@github.com>
+ * @author Koperdog <koperdog@dev.gmail.com>
  * @version 1.0
  */
-class SettingRepository {
+class SettingRepository 
+{
+    
+    const RELATE_NAME = 'setting';
     
     /**
      * Checks if exists Setting by name
@@ -42,90 +41,37 @@ class SettingRepository {
         return Setting::find()->where(['name' => $name])->exists();
     }
     
-    /**
-     * Gets all settings
-     * 
-     * @return array|null
-     * @throws \DomainException
-     */
-    public function getAll(): ?array
+    public function getById(int $id): Setting
     {
-        if(!$models = Setting::findAll()){
-            throw new \DomainException();
-        }
-        return $models;
-    }
-    
-    /**
-     * Gets all settings by status
-     * 
-     * @return array|null
-     * @throws \DomainException
-     */
-    public function getAllByStatus(int $status): ?array
-    {
-        $models = Setting::find()
-                ->where(['status' => $status])
-                ->indexBy('name')
-                ->all();
-        
-        if(!$models){
-            throw new \DomainException();
-        }
-        
-        return $models;
-    }
-    
-    /**
-     * Gets all settings by domain id
-     * 
-     * @return array|null
-     * @throws \DomainException
-     */
-    public function getAllByDomain(int $domain_id, int $status = null, int $lang_id = null): ?array
-    {
-        $models = Setting::find()
-                ->where(['domain_id' => $domain_id])
-                ->andFilterWhere(['status' => $status, 'lang_id' => $lang_id])
-                ->indexBy('name')
-                ->orderBy('status')
-                ->all();
-        
-        if(!$models){
-            throw new \DomainException();
-        }
-        
-        return $models;
-    }
-    
-    public function getAllByName(string $name): ?array
-    {
-        $models = Setting::find()
-                ->where(['name' => $name])
-                ->all();
-        
-        if(!$models){
+        if(!$model = Setting::findOne($id)){
             throw new DomainException();
         }
         
-        return $models;
+        return $model;
     }
     
-    public function deleteAllByName(string $name): ?bool
-    {
-        return Setting::deleteAll(['name' => $name, 'status' => Setting::STATUS['CUSTOM']]);
+    public function getAllByStatus
+    (
+        int $status      = Setting::STATUS['GENERAL'],
+        int $domain_id   = null,
+        int $language_id = null
+    )
+    {        
+        $model = SettingValueQuery::get($domain_id, $language_id, $status)->joinWith('setting')->indexBy('setting.name')->all();
+        
+        if(!$model){
+            throw new \DomainException("Setting with status: {$status} does not exist");
+        }
+        
+        return $model;
     }
     
-    /**
-     * Gets setting by id
-     * 
-     * @return array|null
-     * @throws \DomainException
-     */
-    public function get(int $id): Setting
+    public function getAllByDomain(int $domain_id, int $language_id = null)
     {
-        if(!$model = Setting::findOne($id)){
-            throw new \DomainException();
+        $model = SettingValueQuery::get($domain_id, $language_id)->indexBy('setting.name')->all();
+        
+        if(!$model){
+            throw new \DomainException("Setting for domain id: {$domain_id} does not exist");
         }
         
         return $model;
@@ -134,45 +80,93 @@ class SettingRepository {
     /**
      * Saves setting
      * 
-     * @return array|null
+     * @return bool
      * @throws \DomainException
      */
-    public function save(Setting $setting): bool
+    public function save(ActiveRecord $setting): bool
     {
         if(!$setting->save()){
             throw new \RuntimeException();
         }
+        
         return true;
     }
     
-    /**
-     * Saves all settings
-     * 
-     * @return array|null
-     * @throws \DomainException
-     */
-    public function saveAll(array $settings, array $data): bool
+    public function delete(ActiveRecord $setting): bool
     {
-        if (Model::loadMultiple($settings, $data) && Model::validateMultiple($settings)) {
-            foreach ($settings as $setting) {
-                $this->save($setting);
-            }
+        if(!$setting->delete()){
+            throw new RuntimeException();
         }
         
         return true;
     }
     
     /**
-     * Removes all settings by domain id
+     * Saves all settings
      * 
-     * @return array|null
-     * @throws \DomainException
+     * @param array $settings
+     * @param array $data
+     * @return bool
      */
-    public function removeAllByDomain(int $domain_id): bool
+    public function saveAll(array $settings, array $data, $domain_id = null, $language_id = null): bool
     {
-        if(!Setting::deleteAll(['domain_id' => $domain_id])){
-            throw new \RuntimeException();
+        foreach($settings as $index => $setting){
+            
+            $load = $data['SettingValue'][$index];
+            $load['required'] = $setting->setting->required;
+                        
+            if($setting->load($load, '') && $setting->validate()){
+                if(($setting->domain_id != $domain_id || $setting->language_id != $language_id)
+                    && $setting->getDirtyAttributes())
+                {
+                    $this->copySetting($setting, $domain_id, $language_id);
+                }
+                else{
+                    $this->save($setting);
+                }
+            }
+            else{
+                return false;
+            }
         }
+        
+        return true;
+    }
+    
+    private function copySetting(ActiveRecord $setting, $domain_id, $language_id)
+    {
+        $newSetting = new SettingValue();
+        $newSetting->attributes = $setting->attributes;
+        
+        $newSetting->domain_id   = $domain_id;
+        $newSetting->language_id = $language_id;
+        
+        return $this->save($newSetting);
+    }
+    
+    public function create(SettingForm $form, $status = Setting::STATUS['CUSTOM']): bool
+    {
+        $setting = new Setting([
+            'name'     => $form->name,
+            'autoload' => $form->autoload,
+            'required' => $form->required,
+            'status'   => $status
+        ]);
+        
+        $settingValue = new SettingValue([
+            'value'     => $form->value,
+        ]);
+        
+        $transaction = \Yii::$app->db->beginTransaction();
+        try{
+            $this->save($setting);
+            $settingValue->link(self::RELATE_NAME, $setting);
+            $transaction->commit();
+        }catch(\RuntimeException $e){
+            $transaction->rollBack();
+            return false;
+        }
+        
         return true;
     }
 }

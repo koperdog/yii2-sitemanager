@@ -1,60 +1,89 @@
 <?php
 
-/*
- * Copyright 2019 Koperdog <koperdog@github.com>.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/**
+ * @link https://github.com/koperdog/yii2-treeview
+ * @copyright Copyright (c) 2019 Koperdog
+ * @license https://github.com/koperdog/yii2-sitemanager/blob/master/LICENSE
  */
 
 namespace koperdog\yii2sitemanager\components;
 
-use koperdog\yii2sitemanager\readModels\DomainReadRepository;
+use koperdog\yii2sitemanager\repositories\read\DomainReadRepository;
 use koperdog\yii2sitemanager\useCases\DomainService;
 
 /**
- * Description of Domain
+ * Component for work with domains
  *
- * @author Koperdog <koperdog@github.com>
+ * @author Koperdog <koperdog@dev.gmail.com>
+ * @version 1.0
  */
 class Domains extends \yii\base\Component
 {
     /**
-     * Current domain, SERVER_HOST
-     * 
-     * @var type string
+     * @var string Current domain, SERVER_HOST
      */
-    private $current;
+    public $currentHost;
     
-    private $service;
+    /**
+     * @var array Current|Default langauge
+     */
+    private static $current;
     
-    private $repository;
+    /**
+     * @var DomainService Service (UseCases) for work with domains
+     */
+    private $domainService;
+    
+    /**
+     * @var DomainReadRepository Repository for work with domains model
+     */
+    private $domainRepository;
     
     public function __construct(DomainService $service, DomainReadRepository $repository) {
         parent::__construct();
         
-        $this->current = \Yii::$app->getRequest()->serverName;
+        $this->currentHost = \Yii::$app->getRequest()->serverName;
         
-        $this->service    = $service;
-        $this->repository = $repository;
+        $this->domainService    = $service;
+        $this->domainRepository = $repository;
+        
+        $this->getDomain();
     }
     
-    public function getDomain(): string
+    /**
+     * Gets id of current domain
+     * 
+     * @return int
+     */
+    public function getCurrentId(): int
     {
-        return $this->current;
+        return self::$current['id'];
     }
     
+    /**
+     * Gets current domain
+     * 
+     * @return array|null
+     */
+    public function getDomain(): ?array
+    {
+        if(self::$current === null){
+            try{
+                self::$current = $this->domainRepository->getByDomain($this->currentHost);
+            } catch(\DomainException $e){
+                self::$current = $this->getDefault();
+            }
+        }
+        return self::$current;
+    }
+    
+    /**
+     * Gets default domain
+     * 
+     * @return array
+     */
     public function getDefault(): array
     {
-        return $this->repository->getDefault();
+        return $this->domainRepository->getDefault();
     }
 }

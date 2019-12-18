@@ -1,28 +1,42 @@
 <?php
 
+/**
+ * @link https://github.com/koperdog/yii2-treeview
+ * @copyright Copyright (c) 2019 Koperdog
+ * @license https://github.com/koperdog/yii2-sitemanager/blob/master/LICENSE
+ */
+
 namespace koperdog\yii2sitemanager\controllers;
 
 use Yii;
-use yii\data\ActiveDataProvider;
+use koperdog\yii2sitemanager\models\Domain;
+use koperdog\yii2sitemanager\models\DomainSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
-use koperdog\yii2sitemanager\useCases\DomainService;
-use koperdog\yii2sitemanager\repositories\DomainRepository;
-use koperdog\yii2sitemanager\repositories\SettingRepository;
-use koperdog\yii2sitemanager\models\Domain;
+use koperdog\yii2sitemanager\useCases\{
+    DomainService, 
+    SettingService
+};
+use koperdog\yii2sitemanager\repositories\{
+    DomainRepository,
+    SettingRepository
+};
+use \koperdog\yii2sitemanager\models\forms\DomainForm;
 
 /**
- * DomainController implements the CRUD actions for Domain model.
+ * DomainsController implements the CRUD actions for Domain model.
+ * 
+ * @author Koperdog <koperdog@dev.gmail.com>
+ * @version 1.0
  */
 class DomainsController extends Controller
 {
+    private $domainService;
+    private $domainRepository;
+    private $settingService;
+    private $settingRepository;
     
-    private $service;
-    
-    private $domain;
-    private $settings;
     /**
      * {@inheritdoc}
      */
@@ -42,16 +56,18 @@ class DomainsController extends Controller
     (
         $id, 
         $module, 
-        DomainService $service,
-        DomainRepository $domain,
-        SettingRepository $settings,
+        DomainService $domainService,
+        DomainRepository $domainRepository,
+        SettingService $settingService,
+        SettingRepository $settingRepository,
         $config = []
     ) 
     {
         parent::__construct($id, $module, $config);
-        $this->service  = $service;
-        $this->domain   = $domain; 
-        $this->settings = $settings;
+        $this->domainService     = $domainService;
+        $this->domainRepository  = $domainRepository; 
+        $this->settingService    = $settingService;
+        $this->settingRepository = $settingRepository;
     }
 
     /**
@@ -60,28 +76,13 @@ class DomainsController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => $this->domain->find()
-        ]);
+//        debug(\Yii::$app->params);
+        $searchModel = new DomainSearch();
+        $dataProvider = $this->domainRepository->search($searchModel, Yii::$app->request->queryParams);
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single Domain model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        $settings = $this->settings->getAllByDomain($id, $status);
-        
-        return $this->render('view', [
-            'model'    => $this->findModel($id),
-            'settings' => $settings
         ]);
     }
 
@@ -92,20 +93,23 @@ class DomainsController extends Controller
      */
     public function actionCreate()
     {
-        $form = new \koperdog\yii2sitemanager\models\Domain();
+        $model = new DomainForm();
 
-        if ($form->load(Yii::$app->request->post())){
-            if($this->service->createDomain(Yii::$app->request->post('Domain'))){
-                \Yii::$app->session->setFlash('success', \Yii::t('sitemanager', 'Success save'));
-                return $this->redirect(['manager/domains']);
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            if($domain = $this->domainService->create($model)){
+                \Yii::$app->session->setFlash('success', \Yii::t('sitemanager', 'Success create'));
+                return $this->redirect(['update', 'id' => $domain->id]);
             }
             else{
                 \Yii::$app->session->setFlash('error', \Yii::t('sitemanager/error', 'Error create'));
             }
         }
+        else if(Yii::$app->request->post() && !$model->validate()){
+            \Yii::$app->session->setFlash('error', \Yii::t('sitemanager/error', 'Error create'));
+        }
 
         return $this->render('create', [
-            'model' => $form,
+            'model' => $model,
         ]);
     }
 
@@ -118,32 +122,32 @@ class DomainsController extends Controller
      */
     public function actionUpdate($id)
     {
-        $form     = $this->findModel($id);
-        $settings = $this->settings->getAllByDomain($id);
-
-        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
-            
+        $language_id = \Yii::$app->session->get('_language');
+        
+        $model    = $this->findModel($id);
+        $settings = $this->findDomainSettings($id, $language_id);
+        
+        
+//        debug($settings);
+//        exit();
+        
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if(
-                $this->service->updateDomain($form->id, \Yii::$app->request->post()) &&
-                $this->settings->saveAll($settings, \Yii::$app->request->post())
+                $this->domainService->updateDomain($model->id, \Yii::$app->request->post()) &&
+                $this->settingService->saveMultiple($settings, \Yii::$app->request->post(), $id, $language_id)
             ){
                 \Yii::$app->session->setFlash('success', \Yii::t('sitemanager', 'Success save'));
+                return $this->refresh();
             }
             else{
                 \Yii::$app->session->setFlash('error', \Yii::t('sitemanager/error', 'Error save'));
             }
-            return $this->refresh();
         }
-
+        
         return $this->render('update', [
-            'model'    => $form,
+            'model'    => $model,
             'settings' => $settings
         ]);
-    }
-    
-    public function actionTest()
-    {
-        return \koperdog\yii2sitemanager\widgets\SettingsForm::widget();
     }
 
     /**
@@ -155,16 +159,45 @@ class DomainsController extends Controller
      */
     public function actionDelete($id)
     {
-        $model = $this->findModel($id);
+        $model  = $this->findModel($id);
         
-        if($this->service->deleteDomain($model)){
-            \Yii::$app->session->setFlash('success', \Yii::t('sitemanager', 'Success delete'));
+        if($model->is_default){
+            \Yii::$app->session->setFlash('error', \Yii::t('sitemanager/error', 'Unable to delete default domain'));
+            return $this->redirect(['index']);
+        }
+            
+        if($this->domainService->delete($model)){
+            \Yii::$app->session->setFlash('success', \Yii::t('sitemanager', 'Success save'));
         }
         else{
-            \Yii::$app->session->setFlash('error', \Yii::t('sitemanager/error', 'Error delete'));
+            \Yii::$app->session->setFlash('error', \Yii::t('sitemanager/error', 'Error save'));
         }
-
+        
         return $this->redirect(['index']);
+    }
+    
+    public function actionMakeDefault($id)
+    {
+        $model = $this->findModel($id);
+        
+        if($this->domainService->makeDefault($model)){
+            \Yii::$app->session->setFlash('success', \Yii::t('sitemanager', 'Success save'));
+        }
+        else{
+            \Yii::$app->session->setFlash('error', \Yii::t('sitemanager/error', 'Error save'));
+        }
+        return $this->redirect(['index']);
+    }
+    
+    private function findDomainSettings($id, $language_id = null)
+    {
+        try{
+            $models = $this->settingRepository->getAllByDomain($id, $language_id);
+        } catch(\DomainException $e){
+            throw new NotFoundHttpException(Yii::t('sitemanager', 'The requested page does not exist.'));
+        }
+        
+        return $models;
     }
 
     /**
@@ -176,10 +209,12 @@ class DomainsController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Domain::findOne($id)) !== null) {
-            return $model;
+        try{
+            $model = $this->domainRepository->getById($id);
+        } catch(\DomainException $e){
+            throw new NotFoundHttpException(Yii::t('sitemanager', 'The requested page does not exist.'));
         }
-
-        throw new NotFoundHttpException(Yii::t('sitemanager/error', 'The requested page does not exist.'));
+        
+        return $model;
     }
 }

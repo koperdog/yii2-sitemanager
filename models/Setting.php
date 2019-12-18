@@ -5,23 +5,17 @@ namespace koperdog\yii2sitemanager\models;
 use Yii;
 
 /**
- * This is the model class for table "setting".
+ * This is the model class for table "{{%setting}}".
  *
  * @property int $id
  * @property string $name
- * @property string $value
  * @property int $required
+ * @property int $autoload
  * @property int $status
- * @property int $domain_id
- * @property int $lang_id
- *
- * @property Language $lang
- * @property Domain $domain
  */
 class Setting extends \yii\db\ActiveRecord
-{
-    
-    const STATUS = ['GENERAL' => 0, 'MAIN' => 1, 'CUSTOM' => 2, 'MODULE' => 3];
+{    
+    const STATUS = ['GENERAL' => 0, 'MAIN' => 1, 'CUSTOM' => 2];
     
     /**
      * {@inheritdoc}
@@ -37,23 +31,10 @@ class Setting extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'required'], 'required'],
-            [['value'], 'string'],
-            [['required', 'status', 'domain_id', 'lang_id'], 'integer'],
+            [['name', 'required', 'autoload', 'status'], 'required'],
+            [['required', 'autoload', 'status'], 'integer'],
             [['name'], 'string', 'max' => 100],
-            [['autoload'], 'default', 'value' => false],
-            [['status'], 'default', 'value' => self::STATUS['CUSTOM']],
-            [['lang_id'], 'exist', 'skipOnError' => true, 'targetClass' => Language::className(), 'targetAttribute' => ['lang_id' => 'id']],
-            [['domain_id'], 'exist', 'skipOnError' => true, 'targetClass' => Domain::className(), 'targetAttribute' => ['domain_id' => 'id']],
-            ['value', 'checkRequired', 'skipOnEmpty' => false]
         ];
-    }
-    
-    public function checkRequired()
-    {
-        if((bool)$this->required && !strlen($this->value)){
-            $this->addError('value', \Yii::t('sitemanager/error', 'This field is required'));
-        }
     }
 
     /**
@@ -64,35 +45,34 @@ class Setting extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('sitemanager', 'ID'),
             'name' => Yii::t('sitemanager', 'Name'),
-            'value' => Yii::t('sitemanager', 'Value'),
             'required' => Yii::t('sitemanager', 'Required'),
+            'autoload' => Yii::t('sitemanager', 'Autoload'),
             'status' => Yii::t('sitemanager', 'Status'),
-            'domain_id' => Yii::t('sitemanager', 'Domain ID'),
-            'lang_id' => Yii::t('sitemanager', 'Lang ID'),
         ];
     }
 
-        /**
-     * @return \yii\db\ActiveQuery
+    /**
+     * {@inheritdoc}
+     * @return SettingQuery the active query used by this AR class.
      */
-    public function getDomainSettings()
+    public static function find()
     {
-        return $this->hasMany(DomainSetting::className(), ['setting_id' => 'id']);
+        return new SettingQuery(get_called_class());
     }
-
+    
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLang()
+    public function getValue()
     {
-        return $this->hasOne(Language::className(), ['id' => 'lang_id']);
+        return $this->hasOne(SettingValue::className(), ['setting_id' => 'id']);
     }
-
+    
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getDomain()
+    public function getValues()
     {
-        return $this->hasOne(Domain::className(), ['id' => 'domain_id']);
+        return $this->hasMany(SettingValue::className(), ['setting_id' => 'id']);
     }
 }

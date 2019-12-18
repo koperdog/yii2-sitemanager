@@ -1,17 +1,21 @@
 <?php
+
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
+
 /* @var $this yii\web\View */
-/* @var $settings common\models\Setting with aggignment models*/
+/* @var $settings koperdog\yii2sitemanager\models\Setting with aggignment models*/
+
+$this->title = Yii::t('sitemanager', 'General Settings');
+$this->params['breadcrumbs'][] = $this->title;
 ?>
+
 <?php $form = ActiveForm::begin(); ?>
-    <?php // debug($settings);?>
 
-
-    <?=$form->field($settings['disconnected'], "[disconnected]value")->checkbox(['label' => false])->label("Disconnected");?>
-
-    <?=$form->field($settings['main_page'], "[main_page]value")->dropDownList(["Главная страница", "Тестовая страница"])->label("Main page");?>
+    <?=$form->field($settings['_disconnected'], "[_disconnected]value")->checkbox(['label' => false])->label("Disconnected");?>
+   
+    <?=$form->field($settings['site_name'], "[site_name]value")->label("Site name");?>
 
     <?= Html::submitButton(Yii::t('sitemanager', 'Save'), ['class' => 'btn btn-primary']) ?>
 <?php ActiveForm::end();?>

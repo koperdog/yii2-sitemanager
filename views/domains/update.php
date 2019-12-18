@@ -22,35 +22,53 @@ $this->registerJsVar('i18n', ['confirm' => \Yii::t('sitemanager', 'Are you sure?
 
     <h1><?= Html::encode($this->title) ?></h1>
 
+    <?php debug(\Yii::$app->session->get('_domain'));?>
+    <?php debug(\Yii::$app->session->get('_language'));?>
     <div class="domain-form">
         <?php $form = ActiveForm::begin(); ?>
 
-        <?= $form->field($model, 'domain')->textInput(['maxlength' => true]) ?>
+        <div class="row">
+        <?= $form->field($model, 'name', ['options' => ['class' => 'col-md-6']])->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'domain', ['options' => ['class' => 'col-md-6']])->textInput(['maxlength' => true]) ?>
+        </div>
+        
+        <?php if(!empty($settings)):?>
         <div class="panel panel-default">
             <div class="panel-heading"><?=\Yii::t('sitemanager', 'Settings');?></div>
             <div class="panel-body" id="settings_wr">
                 
-                <?=$form->field($settings['disconnected'], "[disconnected]value")->checkbox(['label' => false])->label("Disconnected");?>
+                <?=$form->field($settings['disconnected'], "[disconnected]value")
+                    ->checkbox(['label' => false])
+                    ->label("Disconnected");?>
+
+                <?=$form->field($settings['site_name'], "[site_name]value")
+                    ->label("Site name");?>
                 
             </div>
         </div>
+        <?php endif;?>
         
         <div class="panel panel-default">
             <div class="panel-heading"><?=\Yii::t('sitemanager', 'Custom Settings');?></div>
             <div class="panel-body" id="settings_wr">
-                
+                <?php if(!empty($settings)):?>
                 <?php foreach($settings as $index => $setting):?>
-                <?php if($setting->status == \koperdog\yii2sitemanager\models\Setting::STATUS['CUSTOM']):?>
+                <?php if($setting->setting->status == \koperdog\yii2sitemanager\models\Setting::STATUS['CUSTOM']):?>
                 
                 <div class="custom-setting-wr">
-                    <?=$form->field($setting, "[$index]value", ['options' => ['class' => ($setting->required? 'required' : '')]])->textarea()->label($index);?>
+                    <?=$form->field($setting, "[$index]value", ['options' => ['class' => ($setting->setting->required? 'required' : '')]])->textarea()->label($index);?>
                     <div class="controls_wr">
-                        <a href="<?= yii\helpers\Url::to(['default/update', 'id' => $setting->id]);?>"><i class="fa fa-gear"></i></a>
-                        <a data-href="<?= yii\helpers\Url::to(['default/delete', 'id' => $setting->id]);?>" class="setting-delete"><i class="fa fa-times"></i></a>
+                        <a href="<?= yii\helpers\Url::to(['default/update', 'id' => $setting->setting->id]);?>">
+                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                        </a>
+                        <a data-href="<?= yii\helpers\Url::to(['default/delete', 'id' => $setting->setting->id]);?>" class="setting-delete">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </a>
                     </div>
                 </div>
                 <?php endif;?>
                 <?php endforeach;?>
+                <?php endif;?>
                 
                 <p>
                     <?= Html::a(Yii::t('sitemanager', 'Create Setting'), ['default/create'], ['class' => 'btn btn-success']) ?>
