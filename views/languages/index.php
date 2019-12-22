@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+
 /* @var $this yii\web\View */
 /* @var $searchModel koperdog\yii2sitemanager\models\LanguageSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */

@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?=$form->field($settings['_disconnected'], "[_disconnected]value")->checkbox(['label' => false])->label("Disconnected");?>
    
-    <?=$form->field($settings['site_name'], "[site_name]value")->label("Site name");?>
+    <?=$form->field($settings['_site_name'], "[_site_name]value")->label("Site name");?>
 
     <?= Html::submitButton(Yii::t('sitemanager', 'Save'), ['class' => 'btn btn-primary']) ?>
 <?php ActiveForm::end();?>

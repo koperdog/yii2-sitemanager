@@ -3,7 +3,7 @@ use yii\db\Migration;
 /**
  * Class m191117_062825_settings
  */
-class m191117_062825_settings extends Migration
+class m191117_062825_sitemanager extends Migration
 {
     const STATUS = ['GENERAL' => 0, 'MAIN' => 1];
     
@@ -22,6 +22,12 @@ class m191117_062825_settings extends Migration
             'status'   => self::STATUS['MAIN']
         ],
         [
+            'name' => '_site_name',
+            'required' => true,
+            'autoload' => true,
+            'status'   => self::STATUS['GENERAL']
+        ],
+        [
             'name' => 'site_name',
             'required' => true,
             'autoload' => true,
@@ -37,6 +43,11 @@ class m191117_062825_settings extends Migration
         ],
         'disconnected' => [
             'value' => 0,
+            'domain_id' => null,
+            'language_id' => null
+        ],
+        '_site_name' => [
+            'value' => 'New site',
             'domain_id' => null,
             'language_id' => null
         ],
@@ -62,6 +73,7 @@ class m191117_062825_settings extends Migration
         
         $this->createTable('{{%domain}}', [
             'id'     => $this->primaryKey(),
+            'name'   => $this->string(100)->notNull(),
             'domain' => $this->string(255)->notNull()->unique(),
             'is_default'   => $this->boolean()->notNull()
         ]);
@@ -78,8 +90,8 @@ class m191117_062825_settings extends Migration
         $this->createTable('{{%setting_value}}', [
             'id'          => $this->primaryKey(),
             'setting_id'  => $this->integer()->notNull(),
-            'domain_id'   => $this->integer()->notNull(),
-            'language_id' => $this->integer()->notNull(),
+            'domain_id'   => $this->integer(),
+            'language_id' => $this->integer(),
             'value'       => $this->text()
         ]);
         
@@ -98,7 +110,7 @@ class m191117_062825_settings extends Migration
      */
     public function safeDown()
     {
-        echo "m191117_062825_settings cannot be reverted.\n";
+        echo "m191117_062825_sitemanager cannot be reverted.\n";
         return false;
     }
     
@@ -107,13 +119,14 @@ class m191117_062825_settings extends Migration
         
         $this->insert('{{%domain}}', [
             'domain'     => 'main',
+            'name'       => 'Main',
             'is_default' => true
-        ]);        
+        ]);
         
         $this->insert('{{%language}}',[
             'code' => 'en', 
             'code_local' => 'en-US', 
-            'name' => 'english', 
+            'name' => 'English', 
             'status' => 1, 
             'is_default' => true
         ]);
@@ -121,7 +134,7 @@ class m191117_062825_settings extends Migration
         $this->insert('{{%language}}',[
             'code' => 'ru', 
             'code_local' => 'ru-RU', 
-            'name' => 'russian', 
+            'name' => 'Russian', 
             'status' => 1, 
             'is_default' => false
         ]);
