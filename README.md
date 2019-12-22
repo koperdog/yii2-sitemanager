@@ -29,17 +29,11 @@ Add the component to your common config:
 ```php
 ...
 'components' => [
-    ...
+    // ...
     'settings' => [
         'class' => 'koperdog\yii2sitemanager\components\Settings',
     ],
-    'domains' => [
-        'class' => 'koperdog\yii2sitemanager\components\Domains',
-    ],
-    'languages' => [
-        'class' => 'koperdog\yii2sitemanager\components\Languages',
-    ],
-    ...
+    // ...
 ]
 ... 
 ```
@@ -84,26 +78,24 @@ If you are not sure if the setting is autoload:
 <details>
   <summary>CRUD and URL config</summary>
   
-CRUD settings from backend:
+#### CRUD settings:
 go to /manager
-
-CRUD domains:
+#### CRUD domains:
 go to /manager/domains
-
-CRUD languages:
+#### CRUD languages:
 go to /manager/languages
 
 also, if you want use standart CRUD, you can add to Url rule config:
 
 ```php
-...
+// ...
 'rules' => [
     'manager' => 'manager/default/index',
     'manager/<controller:domains|languages>/<action:\w+>' => 'manager/<controller>/<action>',
     'manager/<controller:domains|languages>' => 'manager/<controller>/index',
     'manager/<action:\w+>' => 'manager/default/<action>',
 ],
-...
+// ...
 ```
   
 </details>
