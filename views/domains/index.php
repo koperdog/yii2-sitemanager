@@ -4,21 +4,26 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 /* @var $this yii\web\View */
-/* @var $searchModel koperdog\yii2sitemanager\models\DomainSearch */
+/* @var $searchModel t2cms\sitemanager\models\DomainSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('sitemanager', 'Domains');
 $this->params['breadcrumbs'][] = $this->title;
 
-\koperdog\yii2sitemanager\AssetBundle::register($this);
+\t2cms\sitemanager\AssetBundle::register($this);
 ?>
 <div class="domain-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a(Yii::t('sitemanager', 'Create Domain'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    <div class="section-justify">
+        <p>
+            <?= Html::a(Yii::t('sitemanager', 'Create Domain'), ['create'], ['class' => 'btn btn-success']) ?>
+        </p>
+        <div class="zone-section">
+            <?= t2cms\sitemanager\widgets\local\LanguageList::widget();?>
+        </div>
+    </div>
 
     <?php // Pjax::begin(); ?>
 

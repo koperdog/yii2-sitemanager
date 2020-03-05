@@ -1,5 +1,5 @@
 .custom-setting-wr{
-	position: relative;
+    position: relative;
 }
 
 .custom-setting-wr .controls_wr{
@@ -9,10 +9,45 @@
 }
 
 .custom-setting-wr .required label:after{
-	content: '*';
-	color:red;
-	margin-left:7px;
+    content: '*';
+    color:red;
+    margin-left:7px;
 }
 .make-default > span{
     font-size:20px
+}
+.section-justify{
+    display: flex;
+    justify-content: space-between;
+}
+.zone-section{
+    display: inline-flex;
+}
+.change-zone select{
+    background: #fff;
+}
+.change-zone, .change-zone{
+    position:relative;
+}
+.change-zone > select{
+    padding-left:30px;
+}
+.change-zone:before{
+    position:relative;
+    left:22px;
+    display: inline-block;
+    font-family: "Glyphicons Halflings";
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.change-zone.language:before{
+    top:2px;
+    content: "\e135";
+}
+.change-zone.domain:before{
+    top:3px;
+    content: "\e012";
 }

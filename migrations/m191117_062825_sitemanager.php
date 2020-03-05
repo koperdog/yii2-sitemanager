@@ -95,13 +95,9 @@ class m191117_062825_sitemanager extends Migration
             'value'       => $this->text()
         ]);
         
-        $this->createIndex('idx-domain-setting_id', '{{%setting_value}}', 'setting_id');
-        $this->createIndex('idx-domain-domain_id', '{{%setting_value}}', 'domain_id');
-        $this->createIndex('idx-domain-language_id', '{{%setting_value}}', 'language_id');
-        
-        $this->addForeignKey('fk-setting-setting_id', '{{%setting_value}}', 'setting_id', '{{%setting}}', 'id');
-        $this->addForeignKey('fk-setting-domain_id', '{{%setting_value}}', 'domain_id', '{{%domain}}', 'id');
-        $this->addForeignKey('fk-setting-language_id', '{{%setting_value}}', 'language_id', '{{%language}}', 'id');
+        $this->addForeignKey('fk-setting-setting_id', '{{%setting_value}}', 'setting_id', '{{%setting}}', 'id', 'CASCADE');
+        $this->addForeignKey('fk-setting-domain_id', '{{%setting_value}}', 'domain_id', '{{%domain}}', 'id', 'CASCADE');
+        $this->addForeignKey('fk-setting-language_id', '{{%setting_value}}', 'language_id', '{{%language}}', 'id', 'CASCADE');
 
         $this->baseFill();
     }

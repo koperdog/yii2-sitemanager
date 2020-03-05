@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @link https://github.com/koperdog/yii2-treeview
+ * @link https://github.com/koperdog/yii2-sitemanager
  * @copyright Copyright (c) 2019 Koperdog
  * @license https://github.com/koperdog/yii2-sitemanager/blob/master/LICENSE
  */

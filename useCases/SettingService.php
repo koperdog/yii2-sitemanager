@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @link https://github.com/koperdog/yii2-treeview
+ * @link https://github.com/koperdog/yii2-sitemanager
  * @copyright Copyright (c) 2019 Koperdog
  * @license https://github.com/koperdog/yii2-sitemanager/blob/master/LICENSE
  */
@@ -50,6 +50,28 @@ class SettingService {
     public function create(SettingForm $form, $status = Setting::STATUS['CUSTOM']): bool
     {
         return $this->settingRepository->create($form, $status);
+    }
+    
+    /**
+     * Updates setting
+     * 
+     * @param Setting $model
+     * @param type $status
+     * @return bool
+     */
+    public function update(Setting $form): bool
+    {
+        $transaction = \Yii::$app->db->beginTransaction();
+        try{
+            $this->settingRepository->save($form);
+            $this->settingRepository->save($form->generalValue);
+            $transaction->commit();
+        }catch(\RuntimeException $e){
+            $transaction->rollBack();
+            return false;
+        }
+        
+        return true;
     }
     
     /**

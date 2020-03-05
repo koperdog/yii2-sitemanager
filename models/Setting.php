@@ -75,4 +75,10 @@ class Setting extends \yii\db\ActiveRecord
     {
         return $this->hasMany(SettingValue::className(), ['setting_id' => 'id']);
     }
+    
+    public function getGeneralValue()
+    {
+        return $this->hasOne(SettingValue::className(), ['setting_id' => 'id'])
+                ->andWhere(['domain_id' => null, 'language_id' => null]);
+    }
 }

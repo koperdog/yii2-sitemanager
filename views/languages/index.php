@@ -5,13 +5,13 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
-/* @var $searchModel koperdog\yii2sitemanager\models\LanguageSearch */
+/* @var $searchModel t2cms\sitemanager\models\LanguageSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('sitemanager', 'Languages');
 $this->params['breadcrumbs'][] = $this->title;
 
-\koperdog\yii2sitemanager\AssetBundle::register($this);
+\t2cms\sitemanager\AssetBundle::register($this);
 ?>
 <div class="language-index">
 

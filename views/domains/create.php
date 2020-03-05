@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model koperdog\yii2sitemanager\models\Domain */
+/* @var $model t2cms\sitemanager\models\Domain */
 
 $this->title = Yii::t('sitemanager', 'Create Domain');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('sitemanager', 'Domains'), 'url' => ['index']];

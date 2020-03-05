@@ -3,14 +3,13 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model koperdog\yii2sitemanager\models\Language */
+/* @var $model t2cms\sitemanager\models\Language */
 
 $this->title = Yii::t('sitemanager', 'Update Language: {name}', [
     'name' => $model->name,
 ]);
 $this->params['breadcrumbs'][] = ['label' => Yii::t('sitemanager', 'Languages'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = Yii::t('sitemanager', 'Update');
+$this->params['breadcrumbs'][] = $model->name;
 ?>
 <div class="language-update">
 

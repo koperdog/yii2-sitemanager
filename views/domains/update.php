@@ -5,22 +5,26 @@ use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Domain */
-/* @var $settings array koperdog\yii2sitemanager\models\Setting */
+/* @var $settings array t2cms\sitemanager\models\Setting */
 
 $this->title = Yii::t('sitemanager', 'Settings of Domain: {name}', [
     'name' => $model->domain,
 ]);
 $this->params['breadcrumbs'][] = ['label' => Yii::t('sitemanager', 'Domains'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = Yii::t('sitemanager', 'Update');
+$this->params['breadcrumbs'][] = $model->name;
 
-\koperdog\yii2sitemanager\AssetBundle::register($this);
+\t2cms\sitemanager\AssetBundle::register($this);
 
 $this->registerJsVar('i18n', ['confirm' => \Yii::t('sitemanager', 'Are you sure?')]);
 ?>
 <div class="domain-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="section-justify">
+        <h1><?= Html::encode($this->title) ?></h1>
+        <div class="zone-section">
+            <?= t2cms\sitemanager\widgets\local\LanguageList::widget();?>
+        </div>
+    </div>
 
     <div class="domain-form">
         <?php $form = ActiveForm::begin(); ?>
@@ -51,7 +55,7 @@ $this->registerJsVar('i18n', ['confirm' => \Yii::t('sitemanager', 'Are you sure?
             <div class="panel-body" id="settings_wr">
                 <?php if(!empty($settings)):?>
                 <?php foreach($settings as $index => $setting):?>
-                <?php if($setting->setting->status == \koperdog\yii2sitemanager\models\Setting::STATUS['CUSTOM']):?>
+                <?php if($setting->setting->status == \t2cms\sitemanager\models\Setting::STATUS['CUSTOM']):?>
                 
                 <div class="custom-setting-wr">
                     <?=$form->field($setting, "[$index]value", ['options' => ['class' => ($setting->setting->required? 'required' : '')]])->textarea()->label($index);?>

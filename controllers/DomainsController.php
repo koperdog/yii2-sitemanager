@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @link https://github.com/koperdog/yii2-treeview
+ * @link https://github.com/koperdog/yii2-sitemanager
  * @copyright Copyright (c) 2019 Koperdog
  * @license https://github.com/koperdog/yii2-sitemanager/blob/master/LICENSE
  */
@@ -122,15 +122,11 @@ class DomainsController extends Controller
      */
     public function actionUpdate($id)
     {
-        $language_id = \Yii::$app->session->get('_language');
+        $language_id = \t2cms\sitemanager\components\Languages::getEditorLangaugeId();
         
         $model    = $this->findModel($id);
         $settings = $this->findDomainSettings($id, $language_id);
-        
-        
-//        debug($settings);
-//        exit();
-        
+                
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if(
                 $this->domainService->updateDomain($model->id, \Yii::$app->request->post()) &&
